@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    >
+
+    <data>
+        <variable name="croppedImageBitmap" type="android.graphics.Bitmap"/>
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <ImageView
+            android:layout_gravity="center"
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            bind:imageBitmap="@{croppedImageBitmap}"
+            />
+
+        <LinearLayout
+            android:layout_gravity="bottom|center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+
+            <Button
+                style="?android:attr/buttonBarButtonStyle"
+                android:elevation="3dp"
+                android:layout_margin="10dp"
+                android:id="@+id/openCamera"
+                android:text="@string/open_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <Button
+                style="?android:attr/buttonBarButtonStyle"
+                android:elevation="3dp"
+                android:layout_margin="10dp"
+                android:id="@+id/openPicker"
+                android:text="@string/open_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+
+    </FrameLayout>
+
+</layout>

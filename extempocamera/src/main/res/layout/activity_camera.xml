@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:bind="http://schemas.android.com/tools"
+>
+    <data>
+        <variable name="imageBitmap" type="android.graphics.Bitmap"/>
+    </data>
+
+    <FrameLayout
+        android:id="@+id/layoutContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+    >
+
+        <FrameLayout
+                android:id="@+id/cameraPreviewFrameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+        />
+
+        <ImageButton
+                android:id="@+id/captureImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/capture_button"
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="20dp"
+                app:backgroundTint="@null"
+                android:backgroundTint="@null"
+        />
+
+        <FrameLayout
+                android:id="@+id/capturedImageLayoutContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+        >
+
+            <ImageView
+                    android:visibility="gone"
+                    android:id="@+id/capturedImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/cropper_background"
+                    android:scaleType="fitXY"
+                    bind:imageBitmap="@{imageBitmap}"
+                    android:adjustViewBounds="true"
+            />
+
+            <com.extempo.camera.view.PolygonView
+                    android:id="@+id/polygonOverlayView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+            />
+
+            <LinearLayout
+                    android:id="@+id/buttonBar"
+                    android:gravity="center"
+                    android:layout_gravity="bottom|center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+            >
+
+
+                <ImageButton
+                        android:elevation="3dp"
+                        android:layout_margin="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:id="@+id/cropButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_crop_icon"
+                        android:background="@null"
+                        android:backgroundTint="#fffb"
+                        android:visibility="gone"
+                />
+
+                <ImageButton
+                        android:elevation="3dp"
+                        android:layout_margin="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:id="@+id/rotateButton"
+                        app:backgroundTint="@null"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_rotate_icon"
+                        android:background="@null"
+                        android:backgroundTint="#fffb"
+                        android:visibility="gone"
+                />
+
+                <ImageButton
+                        android:elevation="3dp"
+                        android:layout_margin="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:id="@+id/repeatButton"
+                        app:backgroundTint="@null"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_repeat_icon"
+                        android:background="@null"
+                        android:backgroundTint="#fffb"
+                        android:visibility="gone"
+                />
+
+                <ImageButton
+                        android:elevation="3dp"
+                        android:layout_margin="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:id="@+id/acceptButton"
+                        app:backgroundTint="@null"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_accept_icon"
+                        android:background="@null"
+                        android:backgroundTint="#fffb"
+                        android:visibility="gone"
+                />
+
+                <ImageButton
+                    android:id="@+id/cancelButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@null"
+                    android:backgroundTint="#fffb"
+                    android:elevation="3dp"
+                    android:src="@android:drawable/ic_delete"
+                    android:visibility="gone"
+                    app:backgroundTint="@null" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+</layout>

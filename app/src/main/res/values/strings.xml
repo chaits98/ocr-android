@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Type Scan</string>
+    <string name="open_camera">Open Camera</string>
+    <string name="open_picker">Open Picker</string>
+    <string name="rotate">Rotate</string>
+    <string name="crop">Crop</string>
+</resources>
