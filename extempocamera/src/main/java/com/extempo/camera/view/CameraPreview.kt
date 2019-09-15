@@ -164,7 +164,7 @@ class CameraPreview(context: Context, private val mCamera: Camera) : SurfaceView
 
     private fun initPaint() {
         paint = Paint()
-        paint.color = resources.getColor(R.color.blue)
+        paint.color = resources.getColor(R.color.colorPrimaryDark)
         paint.strokeWidth = 6f
         paint.isAntiAlias = true
     }

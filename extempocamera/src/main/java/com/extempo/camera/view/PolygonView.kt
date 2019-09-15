@@ -242,7 +242,7 @@ class PolygonView: FrameLayout {
                     var color = if (PolygonUtils.isValidShape(polygonView.getPoints())) {
                         polygonView.resources.getColor(R.color.white)
                     } else {
-                        polygonView.resources.getColor(R.color.red)
+                        polygonView.resources.getColor(R.color.colorError)
                     }
                     polygonView.paint?.color = color
                     this.magnifier?.dismiss()
@@ -288,7 +288,7 @@ class PolygonView: FrameLayout {
                     var color = if (PolygonUtils.isValidShape(polygonView.getPoints())) {
                         polygonView.resources.getColor(R.color.white)
                     } else {
-                        polygonView.resources.getColor(R.color.red)
+                        polygonView.resources.getColor(R.color.colorError)
                     }
                     polygonView.paint?.color = color
                 }

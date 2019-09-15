@@ -20,7 +20,7 @@
             <solid android:color="@color/polygonViewCircleStrokeColor" />
             <stroke
                 android:color="@android:color/transparent"
-                android:width="15dp"
+                android:width="18dp"
                 />
         </shape>
     </item>
