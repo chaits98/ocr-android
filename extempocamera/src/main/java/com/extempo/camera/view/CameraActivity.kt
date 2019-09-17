@@ -3,7 +3,6 @@ package com.extempo.camera.view
 
 import android.Manifest
 import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
@@ -19,7 +18,6 @@ import android.os.Environment
 import android.os.Handler
 import android.provider.MediaStore
 import android.provider.Settings
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
@@ -31,7 +29,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.os.postDelayed
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
@@ -43,7 +40,6 @@ import com.extempo.camera.model.listeners.OnPictureTakenListener
 import com.extempo.camera.utilities.BitmapUtils
 import com.extempo.camera.utilities.CameraUtility
 import com.extempo.camera.utilities.InjectorUtils
-import com.extempo.camera.utilities.ModuleLoader
 import com.extempo.camera.viewmodel.CameraViewModel
 import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.activity_camera.cropButton
@@ -105,7 +101,6 @@ class CameraActivity : AppCompatActivity() {
             cameraPreviewFrameLayout.setOnTouchListener { _, motionEvent ->
                 if (motionEvent.action == MotionEvent.ACTION_DOWN){
                     val offset = resources.getDrawable(R.drawable.capture_button).intrinsicHeight/2
-                    Log.d("log_tag", offset.toString())
                     if (motionEvent.x - offset < 0) {
                         autoFocusImageView.x = 0f
                     } else {
@@ -497,10 +492,6 @@ class CameraActivity : AppCompatActivity() {
         const val ALLOW_KEY = "ALLOWED"
         const val CAMERA_PREF = "camera_pref"
         var adjustment = 0
-
-        init {
-            ModuleLoader.load()
-        }
 
         @JvmStatic
         @BindingAdapter("bind:imageBitmap")

@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.extempo.camera.view.CameraActivity
+import com.extempo.typescan.utilities.ModuleLoader
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -15,6 +16,12 @@ class MainActivity : AppCompatActivity() {
         openCameraButton.setOnClickListener {
             val cameraActivity = Intent(this, CameraActivity::class.java)
             startActivity(cameraActivity)
+        }
+    }
+
+    companion object {
+        init {
+            ModuleLoader.load()
         }
     }
 }
