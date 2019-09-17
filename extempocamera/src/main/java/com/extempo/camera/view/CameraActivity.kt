@@ -15,10 +15,12 @@ import android.hardware.Camera
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
@@ -29,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.os.postDelayed
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
@@ -62,6 +65,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var cameraViewModel: CameraViewModel
     private var isShowing = true
     var isSaving = false
+    var flashOn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,14 +102,33 @@ class CameraActivity : AppCompatActivity() {
 
     private fun initializeListeners() {
         mPreview.let {
-            cameraPreviewFrameLayout.setOnClickListener {
-                if (mCamera != null && it != null) {
-                    mCamera?.autoFocus { success, camera ->
-                        if (success) {
+            cameraPreviewFrameLayout.setOnTouchListener { _, motionEvent ->
+                if (motionEvent.action == MotionEvent.ACTION_DOWN){
+                    val offset = resources.getDrawable(R.drawable.capture_button).intrinsicHeight/2
+                    Log.d("log_tag", offset.toString())
+                    if (motionEvent.x - offset < 0) {
+                        autoFocusImageView.x = 0f
+                    } else {
+                        autoFocusImageView.x = motionEvent.x - offset
+                    }
+                    if (motionEvent.x - offset < 0) {
+                        autoFocusImageView.y = 0f
+                    } else {
+                        autoFocusImageView.y = motionEvent.y - offset
+                    }
+
+                    autoFocusImageView.visibility = View.VISIBLE
+
+                    if (mCamera != null && it != null) {
+                        mCamera?.autoFocus { success, camera ->
+                            autoFocusImageView.visibility = View.GONE
+                            if (success) {
 //                            takePicture()
+                            }
                         }
                     }
                 }
+                return@setOnTouchListener true
             }
 
 //            capturedImageLayoutContainer.setOnClickListener {
@@ -117,6 +140,20 @@ class CameraActivity : AppCompatActivity() {
 //                    isShowing = true
 //                }
 //            }
+
+            flashImageButton.setOnClickListener {
+                var params = mCamera!!.parameters
+                if (flashOn) {
+                    params.flashMode = Camera.Parameters.FLASH_MODE_OFF
+                    mCamera!!.parameters = params
+                    flashOn = false
+                } else {
+                    params.flashMode = Camera.Parameters.FLASH_MODE_TORCH
+                    mCamera!!.parameters = params
+                    flashOn = true
+                }
+                cameraPreviewFrameLayout.callOnClick()
+            }
 
             captureImageButton.setOnClickListener {
                 mPreview?.visibility = View.GONE
@@ -227,7 +264,11 @@ class CameraActivity : AppCompatActivity() {
                     )
                 }
             }
-        } else {
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            showAlertStorage()
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             destinationUri = intent.extras?.getParcelable(MediaStore.EXTRA_OUTPUT) as Uri?
             openCamera()
             initializeListeners()
@@ -281,6 +322,28 @@ class CameraActivity : AppCompatActivity() {
                 this@CameraActivity,
                 arrayOf(Manifest.permission.CAMERA),
                 CAMERA_PERMISSION
+            )
+        }
+        )
+        alertDialog.show()
+    }
+
+    private fun showAlertStorage() {
+        val alertDialog = AlertDialog.Builder(this@CameraActivity).create()
+        alertDialog.setTitle("Alert")
+        alertDialog.setMessage("App needs to access the Storage.")
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "DONT ALLOW") { dialog, _ ->
+            dialog.dismiss()
+            finish()
+        }
+
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "ALLOW", fun(dialog: DialogInterface, _: Int) {
+            dialog.dismiss()
+            ActivityCompat.requestPermissions(
+                this@CameraActivity,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE),
+                STORAGE_PERMISSION
             )
         }
         )
@@ -387,6 +450,21 @@ class CameraActivity : AppCompatActivity() {
             if (photoFile != null) {
                 destinationUri = FileProvider.getUriForFile(this, "com.extempo.camera.fileprovider", photoFile)
             }
+
+            var outputStream: OutputStream? = null
+            try {
+                outputStream = contentResolver.openOutputStream(destinationUri!!)
+                if (outputStream != null) {
+                    bitmap?.compress(
+                        Bitmap.CompressFormat.JPEG, 100, outputStream)
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } finally {
+                outputStream?.close()
+            }
+
+            setResultUri(destinationUri)
         }
 
         isSaving = false
@@ -395,7 +473,10 @@ class CameraActivity : AppCompatActivity() {
     private fun newImageFile(): File {
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
         val imageFileName = "JPEG_${timeStamp}_"
-        var storageDir: File? = getExternalFilesDir(null)
+        var storageDir: File? = File(Environment.getExternalStorageDirectory(), "Type Scan")
+        if (!storageDir!!.exists()) {
+            storageDir.mkdirs()
+        }
         if (storageDir == null) {
             storageDir = filesDir
         }
@@ -412,6 +493,7 @@ class CameraActivity : AppCompatActivity() {
 
     companion object {
         const val CAMERA_PERMISSION = 4
+        const val STORAGE_PERMISSION = 5
         const val ALLOW_KEY = "ALLOWED"
         const val CAMERA_PREF = "camera_pref"
         var adjustment = 0

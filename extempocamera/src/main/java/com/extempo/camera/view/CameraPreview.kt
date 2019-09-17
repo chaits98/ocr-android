@@ -184,7 +184,7 @@ class CameraPreview(context: Context, private val mCamera: Camera) : SurfaceView
     }
 
     private fun convertYuvToJpeg(): ByteArray {
-        val cameraParameters = mCamera.getParameters()
+        val cameraParameters = mCamera.parameters
         val width = cameraParameters.previewSize.width
         val height = cameraParameters.previewSize.height
         val yuv = YuvImage(frameData!!, cameraParameters.previewFormat, width, height, null)
