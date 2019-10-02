@@ -4,4 +4,5 @@
     <string name="open_picker">Open Picker</string>
     <string name="rotate">Rotate</string>
     <string name="crop">Crop</string>
+    <string name="run_inference">Run Inference</string>
 </resources>
