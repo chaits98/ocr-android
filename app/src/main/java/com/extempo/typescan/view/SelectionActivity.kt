@@ -21,15 +21,15 @@ import com.extempo.camera.view.CameraActivity
 import com.extempo.opticalcharacterrecognizer.model.listeners.InferenceListener
 import com.extempo.opticalcharacterrecognizer.utilities.OpticalCharacterDetector
 import com.extempo.typescan.R
-import com.extempo.typescan.databinding.ActivitySelectionBinding
+import com.extempo.typescan.databinding.ActivityHomeBinding
 import com.extempo.typescan.utilities.InjectorUtils
 import com.extempo.typescan.utilities.ModuleLoader
 import com.extempo.typescan.viewmodel.SelectionActivityViewModel
-import kotlinx.android.synthetic.main.activity_selection.*
+import kotlinx.android.synthetic.main.activity_home.*
 
 
 class SelectionActivity : AppCompatActivity() {
-    private lateinit var binding: ActivitySelectionBinding
+    private lateinit var binding: ActivityHomeBinding
     private lateinit var selectionViewModel: SelectionActivityViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,10 +40,9 @@ class SelectionActivity : AppCompatActivity() {
     }
 
     private fun initializeUI() {
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_selection)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         val factory = InjectorUtils.provideSelectionActivityViewModelFactory()
         selectionViewModel = ViewModelProviders.of(this, factory).get(SelectionActivityViewModel::class.java)
-
     }
 
     private fun setListeners() {
@@ -66,7 +65,6 @@ class SelectionActivity : AppCompatActivity() {
                             openCameraButton.visibility = View.VISIBLE
                             runInferenceButton.visibility = View.GONE
                         }
-
                     })
             }
         }
