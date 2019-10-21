@@ -2,13 +2,14 @@ package com.extempo.typescan.model
 
 import androidx.databinding.*
 import androidx.room.*
-import java.util.*
+import java.sql.Timestamp
 
 @Entity(tableName = "Documents")
 data class DocumentItem(
-    @Bindable @PrimaryKey val id: String,
-    @Bindable val name: String,
-    @Bindable val author: String,
-    @Bindable val date: Date
-): BaseObservable()
+    @Bindable var name: String,
+    @Bindable var author: String
+): BaseObservable() {
+    @Bindable @PrimaryKey(autoGenerate = true) var id: Int = 0
+    @Bindable var timestamp: Timestamp = Timestamp(System.currentTimeMillis())
+}
 

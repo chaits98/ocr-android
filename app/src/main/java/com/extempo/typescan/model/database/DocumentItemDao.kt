@@ -8,12 +8,15 @@ interface DocumentItemDao {
     @Query("SELECT * FROM documents")
     fun getAllDocumentItems(): List<DocumentItem>
 
+    @Query("SELECT * FROM documents WHERE id == :id")
+    fun getDocumentItemById(id: String)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDocument(documentItem: DocumentItem)
 
-    @Query("SELECT * FROM documents WHERE id = :id")
-    fun getDocumentItemById(id: String)
+    @Delete
+    fun deleteDocumentItem(documentItem: DocumentItem)
 
-    @Query("DELETE FROM documents WHERE id = :id")
-    fun deleteDocumentItemById(id: String)
+    @Update
+    fun updateDocumentItem(documentItem: DocumentItem)
 }
