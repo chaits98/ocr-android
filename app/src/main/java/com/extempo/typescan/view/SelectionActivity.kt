@@ -34,7 +34,7 @@ class SelectionActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        OpticalCharacterDetector.loadModel(this)
         initializeUI()
         setListeners()
     }

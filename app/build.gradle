@@ -32,6 +32,11 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+
+    aaptOptions {
+        noCompress "tflite"
+        noCompress "lite"
+    }
 }
 
 dependencies {
