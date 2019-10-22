@@ -7,6 +7,7 @@ import androidx.test.*
 import androidx.test.runner.*
 import com.extempo.typescan.model.database.DocumentDatabase
 import com.extempo.typescan.model.database.DocumentItemDao
+import org.hamcrest.CoreMatchers.equalTo
 
 import org.junit.Test
 
@@ -15,46 +16,46 @@ import org.junit.*
 import org.junit.runner.RunWith
 import java.io.IOException
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 @RunWith(AndroidJUnit4::class)
 class DocumentDbInstrumentedTest {
-    private lateinit var documentItemDao: DocumentItemDao
-    private lateinit var db: DocumentDatabase
+    val context = InstrumentationRegistry.getTargetContext()
 
-    @Before
-    fun createDB() {
-        val context = InstrumentationRegistry.getContext()
-        db = Room.inMemoryDatabaseBuilder(
-            context, DocumentDatabase::class.java).build()
-    }
+//    @Test
+//    fun insertDocumentItemSavesAndRetrievesData() {
+//        val doc = DocumentFactory.makeDocumentItem()
+//        println("Generated Document Item doc: $doc")
+//        println("Generated Document Item doc timestamp: " + doc.timestamp)
+//        DocumentDatabase.getInstance(context).documentItemDao().insertDocument(doc)
+//        var docsdb = DocumentDatabase.getInstance(context).documentItemDao().getAllDocumentItems()
+//        var res = DocumentDatabase.getInstance(context).documentItemDao().getDocumentItemById(doc.id)
+//        println("Generated Document Item res: $res")
+//        println("Generated document list: $docsdb")
+//        assertThat(res[0], equalTo(doc))
+//    }
 
-    @After
-    @Throws(IOException::class)
-    fun closeDb() {
-        db.close()
-    }
-
-    @Test
-    fun insertDocumentItemSavesData() {
-
-    }
+//    @Test
+//    fun deleteDocumentItemsClearsData() {
+//        val docsdb = DocumentDatabase.getInstance(context).documentItemDao().getAllDocumentItems()
+//        docsdb.forEach {
+//            DocumentDatabase.getInstance(context).documentItemDao().deleteDocumentItem(it)
+//        }
+//        assert(docsdb.isNullOrEmpty())
+//    }
 
     @Test
     fun getAllDocumentItemsRetrievesData() {
-
+        val docs = DocumentFactory.makeDocumentList(10)
+        for (doc in docs) {
+            DocumentDatabase.getInstance(context).documentItemDao().insertDocument(doc)
+        }
+        var docsdb = DocumentDatabase.getInstance(context).documentItemDao().getAllDocumentItems()
+        assert(docsdb.isNotEmpty())
     }
 
     @Test
-    fun getDocumentItemByIdRetrievesData() {
-
-    }
-
-    @Test
-    fun deleteDocumentItemsClearsData() {
-
+    fun deleteAllDocumentItemsClearsData() {
+        DocumentDatabase.getInstance(context).documentItemDao().deleteAllDocumentItems()
+        val docsdb = DocumentDatabase.getInstance(context).documentItemDao().getAllDocumentItems()
+        assert(docsdb.isNullOrEmpty())
     }
 }
