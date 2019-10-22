@@ -172,8 +172,13 @@ class CameraActivity : AppCompatActivity() {
                         val coordinateAnimator = ValueAnimator.ofObject(CoordinateAnimator(), arrayOf(0,0, imageBitmap!!.height, imageBitmap!!.width), arrayOf((tl.y).toInt(), (tl.x).toInt(), it.height, it.width))
                         coordinateAnimator.addUpdateListener { valueAnimator ->
                             val values = valueAnimator.animatedValue as Array<Int>
-                            val bmp = Bitmap.createBitmap(imageBitmap!!, values[1], values[0], values[3], values[2])
-                            binding.imageBitmap = bmp
+                            try {
+                                val bmp = Bitmap.createBitmap(imageBitmap!!, values[1], values[0], values[3], values[2])
+                                binding.imageBitmap = bmp
+                            }
+                            catch (e: java.lang.Exception) {
+
+                            }
                         }
 
                         if (isShowing) {
