@@ -67,6 +67,7 @@ object OpticalCharacterDetector {
             for (cnt in sentence) {
                 val rect = Imgproc.boundingRect(cnt)
                 val cropped = Mat(result, rect)
+                segmentContour(cropped)
                 val resizeImage = Mat()
                 val sz = Size(100.0, 100.0)
                 val sz2 = Size(28.0, 28.0)
@@ -102,6 +103,15 @@ object OpticalCharacterDetector {
         Utils.matToBitmap(result, bmp)
         inferenceListener.finished(bmp)
 //        return alphabetList
+    }
+
+    private fun segmentContour(mat: Mat): ArrayList<Mat> {
+        val result = ArrayList<Mat>()
+
+        println("log_tag mat: " + mat.cols())
+
+
+        return result
     }
 
     private fun imagePadding(source: Mat, blockSize: Int): Mat {
@@ -174,26 +184,6 @@ object OpticalCharacterDetector {
         }
         return data
     }
-
-//    private fun reshapeData(mat: Mat): Array<Array<Array<Float>>> {
-//        var data = Array(28) { Array(28) { arrayOf(0.0f) } }
-//        for (i in 0..27) {
-//            for (j in 0..27) {
-//                data[i][j] = arrayOf(mat[i, j][0].toFloat())
-//            }
-//        }
-//        return data
-//    }
-
-//    private fun reshapeData(mat: Mat): Array<Array<Int>> {
-//        var data = Array(28) { Array(28) { 0 } }
-//        for (i in 0..27) {
-//            for (j in 0..27) {
-//                data[i][j] = mat[i, j][0].toInt()
-//            }
-//        }
-//        return data
-//    }
 
     @Throws(IOException::class)
     private fun loadLabelList(activity: Activity): List<String> {

@@ -1,37 +1,37 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml:2:1-6:12
-INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml:2:1-6:12
-INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml:2:1-6:12
-INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml:2:1-6:12
-INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml:2:1-6:12
-INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml:2:1-6:12
-INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml:2:1-6:12
+ADDED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml:2:1-6:12
+INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml:2:1-6:12
+INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml:2:1-6:12
+INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml:2:1-6:12
+INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml:2:1-6:12
+INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml:2:1-6:12
+INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml:2:1-6:12
 	package
-		ADDED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml:3:7-27
-		INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml
-		INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml
+		ADDED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml:3:7-27
+		INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml
+		INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml
 	android:versionName
-		ADDED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml:5:7-34
-		INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml
-		INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml
+		ADDED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml:5:7-34
+		INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml
+		INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml
 	xmlns:android
-		ADDED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml:2:11-69
+		ADDED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml:2:11-69
 	android:versionCode
-		ADDED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml:4:7-33
-		INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml
-		INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml
+		ADDED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml:4:7-33
+		INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml
+		INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml
 uses-sdk
-INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml
-INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml
-INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml
-INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml
+INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml
+INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml
+INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml
+INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml
-		ADDED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml
-		INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml
+		INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml
+		ADDED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml
+		INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml
-		ADDED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml
-		INJECTED from /Users/chaitanyaanand/Desktop/Android Projects/Type Scan/opencv/src/main/AndroidManifest.xml
+		INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml
+		ADDED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml
+		INJECTED from /Volumes/CAnand/MacOS/Projects/Android/Type Scan/opencv/src/main/AndroidManifest.xml

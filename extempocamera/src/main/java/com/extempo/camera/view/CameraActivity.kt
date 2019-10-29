@@ -473,10 +473,8 @@ class CameraActivity : AppCompatActivity() {
     private fun newImageFile(): File {
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
         val imageFileName = "JPEG_${timeStamp}_"
-        var storageDir: File? = File(Environment.getExternalStorageDirectory(), "Type Scan")
-        if (!storageDir!!.exists()) {
-            storageDir.mkdirs()
-        }
+        var storageDir: File? = this.externalCacheDir
+        storageDir?.mkdirs()
         if (storageDir == null) {
             storageDir = filesDir
         }
