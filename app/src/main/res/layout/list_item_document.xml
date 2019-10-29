@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list_item_document_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/list_item_document_preview_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/crop_tile" />
+
+    <TextView
+        android:id="@+id/list_item_document_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Document Title"
+        android:textColor="@color/colorOnBackground"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/list_item_document_preview_image"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/list_item_document_written_by"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Written by "
+        android:textColor="@color/colorOnBackground"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/list_item_document_title"
+        app:layout_constraintTop_toBottomOf="@+id/list_item_document_title" />
+
+    <TextView
+        android:id="@+id/list_item_document_created_on"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Created on "
+        android:textColor="@color/colorOnBackgroundFaded"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/list_item_document_title"
+        app:layout_constraintTop_toBottomOf="@+id/list_item_document_written_by" />
+
+    <TextView
+        android:id="@+id/list_item_document_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="date"
+        android:textColor="@color/colorOnBackgroundFaded"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/list_item_document_created_on"
+        app:layout_constraintStart_toEndOf="@+id/list_item_document_created_on"
+        app:layout_constraintTop_toTopOf="@+id/list_item_document_created_on" />
+
+    <TextView
+        android:id="@+id/list_item_document_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="author_name"
+        android:textColor="@color/colorOnBackground"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/list_item_document_written_by"
+        app:layout_constraintStart_toEndOf="@+id/list_item_document_written_by"
+        app:layout_constraintTop_toTopOf="@+id/list_item_document_written_by" />
+
+    <Button
+        android:id="@+id/list_item_document_share_button"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bg_rounded"
+        android:backgroundTint="@color/colorPrimary"
+        android:includeFontPadding="false"
+        android:text="Share"
+        android:textColor="@color/white"
+        android:textColorHighlight="@color/colorBackgroundDark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/list_item_document_title"
+        app:layout_constraintTop_toBottomOf="@+id/list_item_document_created_on" />
+
+    <Button
+        android:id="@+id/list_item_document_delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginStart="8dp"
+        android:background="@null"
+        android:backgroundTint="@null"
+        android:elevation="0dp"
+        android:shadowColor="@null"
+        android:text="Delete"
+        android:textColor="@color/colorError"
+        app:layout_constraintBottom_toBottomOf="@+id/list_item_document_share_button"
+        app:layout_constraintStart_toEndOf="@+id/list_item_document_share_button"
+        app:layout_constraintTop_toTopOf="@+id/list_item_document_share_button" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

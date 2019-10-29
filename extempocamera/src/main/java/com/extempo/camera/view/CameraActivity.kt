@@ -141,10 +141,12 @@ class CameraActivity : AppCompatActivity() {
                 if (flashOn) {
                     params.flashMode = Camera.Parameters.FLASH_MODE_OFF
                     mCamera!!.parameters = params
+                    flashImageButton.setImageResource(R.drawable.ic_zap)
                     flashOn = false
                 } else {
                     params.flashMode = Camera.Parameters.FLASH_MODE_TORCH
                     mCamera!!.parameters = params
+                    flashImageButton.setImageResource(R.drawable.ic_zap_off)
                     flashOn = true
                 }
                 cameraPreviewFrameLayout.callOnClick()
