@@ -20,42 +20,9 @@ import java.io.IOException
 class DocumentDbInstrumentedTest {
     val context = InstrumentationRegistry.getTargetContext()
 
-//    @Test
-//    fun insertDocumentItemSavesAndRetrievesData() {
-//        val doc = DocumentFactory.makeDocumentItem()
-//        println("Generated Document Item doc: $doc")
-//        println("Generated Document Item doc timestamp: " + doc.timestamp)
-//        DocumentDatabase.getInstance(context).documentItemDao().insertDocument(doc)
-//        var docsdb = DocumentDatabase.getInstance(context).documentItemDao().getAllDocumentItems()
-//        var res = DocumentDatabase.getInstance(context).documentItemDao().getDocumentItemById(doc.id)
-//        println("Generated Document Item res: $res")
-//        println("Generated document list: $docsdb")
-//        assertThat(res[0], equalTo(doc))
-//    }
-
-//    @Test
-//    fun deleteDocumentItemsClearsData() {
-//        val docsdb = DocumentDatabase.getInstance(context).documentItemDao().getAllDocumentItems()
-//        docsdb.forEach {
-//            DocumentDatabase.getInstance(context).documentItemDao().deleteDocumentItem(it)
-//        }
-//        assert(docsdb.isNullOrEmpty())
-//    }
-
     @Test
-    fun getAllDocumentItemsRetrievesData() {
-        val docs = DocumentFactory.makeDocumentList(10)
-        for (doc in docs) {
-            DocumentDatabase.getInstance(context).documentItemDao().insertDocument(doc)
-        }
-        var docsdb = DocumentDatabase.getInstance(context).documentItemDao().getAllDocumentItems()
-        assert(docsdb.isNotEmpty())
-    }
-
-    @Test
-    fun deleteAllDocumentItemsClearsData() {
-        DocumentDatabase.getInstance(context).documentItemDao().deleteAllDocumentItems()
-        val docsdb = DocumentDatabase.getInstance(context).documentItemDao().getAllDocumentItems()
-        assert(docsdb.isNullOrEmpty())
+    fun insertDocumentItemSavesAndRetrievesData() {
+        val doc = DocumentFactory.makeDocumentItem()
+        DocumentDatabase.getInstance(context).documentItemDao().insertDocument(doc)
     }
 }
