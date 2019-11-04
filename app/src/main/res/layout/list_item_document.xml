@@ -19,7 +19,7 @@
             android:id="@+id/list_item_document_preview_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -29,13 +29,18 @@
 
         <TextView
             android:id="@+id/list_item_document_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
             android:text="@={DocumentItem.name}"
             android:textColor="@color/colorOnBackground"
             android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/list_item_document_preview_image"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,6 +52,9 @@
             android:text="Written by "
             android:textColor="@color/colorOnBackground"
             android:textSize="12sp"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"
+            android:maxLines="1"
             app:layout_constraintStart_toStartOf="@+id/list_item_document_title"
             app:layout_constraintTop_toBottomOf="@+id/list_item_document_title" />
 
@@ -58,28 +66,41 @@
             android:text="Created on "
             android:textColor="@color/colorOnBackgroundFaded"
             android:textSize="12sp"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"
+            android:maxLines="1"
             app:layout_constraintStart_toStartOf="@+id/list_item_document_title"
             app:layout_constraintTop_toBottomOf="@+id/list_item_document_written_by" />
 
         <TextView
             android:id="@+id/list_item_document_date"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@={DocumentItem.timestamp}"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:text="@={DocumentItem.date}"
             android:textColor="@color/colorOnBackgroundFaded"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/list_item_document_created_on"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/list_item_document_created_on"
             app:layout_constraintTop_toTopOf="@+id/list_item_document_created_on" />
 
         <TextView
             android:id="@+id/list_item_document_author"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
             android:text="@={DocumentItem.author}"
             android:textColor="@color/colorOnBackground"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/list_item_document_written_by"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/list_item_document_written_by"
             app:layout_constraintTop_toTopOf="@+id/list_item_document_written_by" />
 

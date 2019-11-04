@@ -1,10 +1,12 @@
 package com.extempo.typescan.utilities
 
-import com.extempo.typescan.viewmodel.SelectionActivityViewModelFactory
+import android.content.Context
+import com.extempo.typescan.model.repository.DocumentRepository
+import com.extempo.typescan.viewmodel.HomeActivityViewModelFactory
 
 
 object InjectorUtils {
-    fun provideSelectionActivityViewModelFactory(): SelectionActivityViewModelFactory {
-        return SelectionActivityViewModelFactory()
+    fun provideHomeActivityViewModelFactory(context: Context): HomeActivityViewModelFactory {
+        return HomeActivityViewModelFactory(DocumentRepository(context))
     }
 }

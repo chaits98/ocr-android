@@ -15,26 +15,26 @@ class DocumentListViewModel(private val documentRepository: DocumentRepository):
 
     fun getAlldocumentItems(): LiveData<PagedList<DocumentItem>>? = documentRepository.getAllDocumentItems()
 
-    fun addFragment(fragmentManager: FragmentManager, fragment: Fragment, fragmentTag: String) {
-        fragmentManager
-            .beginTransaction()
-            .add(R.id.home_frame_layout, fragment, fragmentTag)
-            .commit()
-    }
-
-    fun replaceFragment(fragmentManager: FragmentManager, fragment: Fragment, fragmentTag: String) {
-        fragmentManager
-            .beginTransaction()
-            .replace(R.id.home_frame_layout, fragment, fragmentTag)
-            .commit()
-    }
-
-    fun removeFragmentWithID(fragmentManager: FragmentManager, fragmentID: String) {
-        val removeFragment = fragmentManager.findFragmentByTag(fragmentID)
-        if (removeFragment != null){
-            fragmentManager.beginTransaction().remove(removeFragment).commitAllowingStateLoss()
-        } else {
-            Log.d("log_tag", "not found")
-        }
-    }
+//    fun addFragment(fragmentManager: FragmentManager, fragment: Fragment, fragmentTag: String) {
+//        fragmentManager
+//            .beginTransaction()
+//            .add(R.id.home_frame_layout, fragment, fragmentTag)
+//            .commit()
+//    }
+//
+//    fun replaceFragment(fragmentManager: FragmentManager, fragment: Fragment, fragmentTag: String) {
+//        fragmentManager
+//            .beginTransaction()
+//            .replace(R.id.home_frame_layout, fragment, fragmentTag)
+//            .commit()
+//    }
+//
+//    fun removeFragmentWithID(fragmentManager: FragmentManager, fragmentID: String) {
+//        val removeFragment = fragmentManager.findFragmentByTag(fragmentID)
+//        if (removeFragment != null){
+//            fragmentManager.beginTransaction().remove(removeFragment).commitAllowingStateLoss()
+//        } else {
+//            Log.d("log_tag", "not found")
+//        }
+//    }
 }

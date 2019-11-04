@@ -22,7 +22,12 @@ class DocumentDbInstrumentedTest {
 
     @Test
     fun insertDocumentItemSavesAndRetrievesData() {
-        val doc = DocumentFactory.makeDocumentItem()
-        DocumentDatabase.getInstance(context).documentItemDao().insertDocument(doc)
+        DocumentDatabase.getInstance(context).documentItemDao().deleteAllDocumentItems()
+        repeat(10) {
+            DocumentDatabase.getInstance(context).documentItemDao()
+                .insertDocument(DocumentFactory.makeDocumentItem())
+        }
+        var docs = DocumentDatabase.getInstance(context).documentItemDao().getAllDocumentItems()
+        println(docs)
     }
 }
