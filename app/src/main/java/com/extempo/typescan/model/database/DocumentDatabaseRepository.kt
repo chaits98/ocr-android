@@ -18,8 +18,9 @@ object DocumentDatabaseRepository {
     }
 
     @WorkerThread
-    fun insertDocumentItem(documentItem: DocumentItem, context: Context) {
+    fun insertDocumentItem(documentItem: DocumentItem, data: ArrayList<String>, context: Context) {
         ThreadManagement.databaseExecutor.execute {
+            documentItem.generateOutputFile(context, data)
             DocumentDatabase.getInstance(context).documentItemDao().insertDocument(documentItem)
         }
     }

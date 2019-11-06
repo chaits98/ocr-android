@@ -37,7 +37,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:scrollHorizontally="true"
-            android:text="@={DocumentItem.name}"
+            android:text="@={DocumentItem.title}"
             android:textColor="@color/colorOnBackground"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
