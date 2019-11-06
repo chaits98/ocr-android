@@ -15,12 +15,12 @@ class TextActivityViewModel(private val documentRepository: DocumentRepository) 
     fun runInference(capturedImageBitmap: Bitmap) {
         OpticalCharacterDetector.findAlphabets(capturedImageBitmap,
             object : InferenceListener {
-                override fun started(bitmap: Bitmap) {
+                override fun started() {
                     // show Activity Indicator
                 }
 
                 @SuppressLint("RestrictedApi")
-                override fun finished(bitmap: Bitmap) {
+                override fun finished(dataList: ArrayList<String>) {
 
                 }
             })
