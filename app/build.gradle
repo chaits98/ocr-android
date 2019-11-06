@@ -57,4 +57,5 @@ dependencies {
     implementation project(':opticalcharacterrecognizer')
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.paging:paging-runtime-ktx:2.1.0'
 }
