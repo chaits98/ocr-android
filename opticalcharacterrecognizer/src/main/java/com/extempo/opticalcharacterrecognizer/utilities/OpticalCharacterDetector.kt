@@ -39,7 +39,7 @@ object OpticalCharacterDetector {
     fun findAlphabets(bitmap: Bitmap, inferenceListener: InferenceListener) {
         var dataList: ArrayList<String> = ArrayList()
 
-        inferenceListener.started(bitmap)
+        inferenceListener.started()
 
         var tempMat = Mat()
         var source = Mat()
@@ -103,13 +103,13 @@ object OpticalCharacterDetector {
 ////            Imgproc.drawContours(result, contours, contours.indexOf(cnt), Scalar(100.0, 0.0, 0.0, 0.8), 2)
 //        }
 
-        val bmp = Bitmap.createBitmap(
-            result.cols(), result.rows(),
-            Bitmap.Config.ARGB_8888
-        )
-        Utils.matToBitmap(result, bmp)
-        inferenceListener.finished(bmp)
-//        return alphabetList
+//        val bmp = Bitmap.createBitmap(
+//            result.cols(), result.rows(),
+//            Bitmap.Config.ARGB_8888
+//        )
+//        Utils.matToBitmap(result, bmp)
+        dataList.forEach { println("dataList: $it") }
+        inferenceListener.finished(dataList)
     }
 
     private fun segmentContour(mat: Mat): ArrayList<Mat> {

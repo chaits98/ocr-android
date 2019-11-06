@@ -31,11 +31,11 @@ class OCRInstrumentedTest {
             R.mipmap.the_test_foreground
         )
         OpticalCharacterDetector.findAlphabets(icon, object: InferenceListener {
-            override fun started(bitmap: Bitmap) {
+            override fun started() {
 
             }
 
-            override fun finished(bitmap: Bitmap) {
+            override fun finished(dataList: ArrayList<String>) {
 
             }
         })

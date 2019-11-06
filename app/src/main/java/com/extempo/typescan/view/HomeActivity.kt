@@ -25,12 +25,10 @@ import com.extempo.camera.view.CameraActivity
 import com.extempo.opticalcharacterrecognizer.model.listeners.InferenceListener
 import com.extempo.opticalcharacterrecognizer.utilities.OpticalCharacterDetector
 import com.extempo.typescan.R
-import com.extempo.typescan.adapter.DocumentListAdapter
 import com.extempo.typescan.adapter.DocumentPagedListAdapter
 import com.extempo.typescan.databinding.ActivityHomeBinding
 import com.extempo.typescan.utilities.InjectorUtils
 import com.extempo.typescan.utilities.ModuleLoader
-import com.extempo.typescan.viewmodel.DocumentListViewModel
 import com.extempo.typescan.viewmodel.HomeActivityViewModel
 import kotlinx.android.synthetic.main.activity_home.*
 
@@ -66,24 +64,24 @@ class HomeActivity : AppCompatActivity() {
             startActivityForResult(cameraActivity, CAMERA_ACTIVITY)
         }
 
-        runInferenceButton.setOnClickListener {
-            homeViewModel.capturedImageBitmap?.let {
-                OpticalCharacterDetector.findAlphabets(it,
-                    object : InferenceListener {
-                        override fun started(bitmap: Bitmap) {
-                            // show Activity Indicator
-                        }
-
-                        @SuppressLint("RestrictedApi")
-                        override fun finished(bitmap: Bitmap) {
-                            binding.croppedImageBitmap = bitmap
-                            // stop activity Indicator
-                            openCameraButton.visibility = View.VISIBLE
-                            runInferenceButton.visibility = View.GONE
-                        }
-                    })
-            }
-        }
+//        runInferenceButton.setOnClickListener {
+//            homeViewModel.capturedImageBitmap?.let {
+//                OpticalCharacterDetector.findAlphabets(it,
+//                    object : InferenceListener {
+//                        override fun started(bitmap: Bitmap) {
+//                            // show Activity Indicator
+//                        }
+//
+//                        @SuppressLint("RestrictedApi")
+//                        override fun finished(bitmap: Bitmap) {
+//                            binding.croppedImageBitmap = bitmap
+//                            // stop activity Indicator
+//                            openCameraButton.visibility = View.VISIBLE
+//                            runInferenceButton.visibility = View.GONE
+//                        }
+//                    })
+//            }
+//        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
