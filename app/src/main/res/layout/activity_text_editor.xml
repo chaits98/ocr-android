@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
     >
+
         <EditText
             android:id="@+id/text_editor_content_text"
             android:layout_width="0dp"
@@ -30,10 +31,11 @@
             android:ems="10"
             android:gravity="start|top"
             android:inputType="textMultiLine"
-            bind:editableText="@+{documentData}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            bind:editableText="@{documentData}"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

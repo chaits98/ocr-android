@@ -12,8 +12,8 @@ class DocumentRepository(private val context: Context) {
         return DocumentDatabaseRepository.getAllDocumentItems(context)
     }
 
-    fun insertDocumentItem(documentItem: DocumentItem) {
-        return DocumentDatabaseRepository.insertDocumentItem(documentItem, context)
+    fun insertDocumentItem(documentItem: DocumentItem, data: ArrayList<String>) {
+        return DocumentDatabaseRepository.insertDocumentItem(documentItem, data, context)
     }
 
     fun updateDocumentItem(documentItem: DocumentItem) {

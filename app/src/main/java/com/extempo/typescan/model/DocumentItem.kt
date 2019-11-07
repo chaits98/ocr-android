@@ -7,6 +7,7 @@ import androidx.room.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStreamWriter
+import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -15,7 +16,7 @@ import kotlin.collections.ArrayList
 data class DocumentItem(
     @Bindable var title: String,
     @Bindable var author: String
-): BaseObservable() {
+): BaseObservable(), Serializable {
     @Bindable @PrimaryKey(autoGenerate = true) var id: Long = 0
     @Bindable var timestamp: Long = System.currentTimeMillis()
     @Bindable var date: String? = null

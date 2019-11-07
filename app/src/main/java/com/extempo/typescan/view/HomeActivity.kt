@@ -89,22 +89,10 @@ class HomeActivity : AppCompatActivity() {
             if(resultCode == Activity.RESULT_OK){
                 if (data?.hasExtra(MediaStore.EXTRA_OUTPUT)!!) {
                     val result = data.getParcelableExtra(MediaStore.EXTRA_OUTPUT) as Uri
-                    Glide.with(this)
-                        .asBitmap()
-                        .load(result)
-                        .into(object : CustomTarget<Bitmap>(){
-                            @SuppressLint("RestrictedApi")
-                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                                binding.croppedImageBitmap = resource
-                                homeViewModel.capturedImageUri = result
-                                homeViewModel.capturedImageBitmap = resource
-                                runInferenceButton.visibility = View.VISIBLE
-                                openCameraButton.visibility = View.GONE
-                            }
-                            override fun onLoadCleared(placeholder: Drawable?) {
-
-                            }
-                        })
+                    val intent = Intent(this, TextEditorActivity::class.java)
+                    intent.putExtra(TEXT_EDITOR_DATA, result)
+                    intent.putExtra(TEXT_EDITOR_NEW, true)
+                    startActivity(intent)
                 }
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -123,6 +111,9 @@ class HomeActivity : AppCompatActivity() {
         }
 
         const val CAMERA_ACTIVITY = 70
+        const val TEXT_EDITOR_DATA = "text_editor_data"
+        const val TEXT_EDITOR_NEW = "text_editor_new_or_not"
+        const val TEXT_EDITOR_DOCUMENT_ITEM = "text_editor_document-_item"
 
         @JvmStatic
         @BindingAdapter("bind:imageBitmap")
