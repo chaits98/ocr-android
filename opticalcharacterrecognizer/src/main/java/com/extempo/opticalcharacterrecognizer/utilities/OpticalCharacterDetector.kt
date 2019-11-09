@@ -125,22 +125,27 @@ object OpticalCharacterDetector {
         Utils.bitmapToMat(bitmap, tempMat)
         Imgproc.cvtColor(tempMat, source, Imgproc.COLOR_BGR2GRAY)
         var result = Mat()
+
+//        Imgproc.threshold(source, result, 150.0, 255.0, Imgproc.THRESH_BINARY_INV)
         Imgproc.adaptiveThreshold(
             source,
             result,
             255.0,
             Imgproc.ADAPTIVE_THRESH_MEAN_C,
             Imgproc.THRESH_BINARY_INV,
-            15,
-            15.0
+            101,
+            40.0
         )
-
-        val element = Imgproc.getStructuringElement(
-        Imgproc.MORPH_RECT,
-            Size(3.0, 3.0)
-        )
-        Imgproc.erode(result, result, element)
-        Imgproc.dilate(result, result, Mat(), Point(-1.0, -1.0))
+//        val element = Imgproc.getStructuringElement(
+//            Imgproc.MORPH_RECT,
+//            Size(2.0, 2.0)
+//        )
+//        Imgproc.erode(result, result, element)
+//        val kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, Size(3.0, 3.0))
+//        Imgproc.morphologyEx(result, result, Imgproc.MORPH_CLOSE, kernel)
+////        Imgproc.dilate(result, result, element)
+//        Imgproc.dilate(result, result, Mat(), Point(-1.0, -1.0))
+//        println(result.dump())
 
         val sentences  = formSentences(result)
 
@@ -150,12 +155,26 @@ object OpticalCharacterDetector {
             for (word in words) {
                 for (letter in word) {
                     var resizeImage = Mat()
-                    val sz = Size(100.0, 100.0)
+//                    val sz = Size(100.0, 100.0)
                     val sz2 = Size(28.0, 28.0)
-                    Imgproc.resize(letter, resizeImage, sz)
-//                    resizeImage = imagePadding(resizeImage, 128)
+//                    Imgproc.resize(letter, resizeImage, sz)
+                    val width = letter.width()
+                    val height = letter.height()
+//                    println("log_tag: width: $width, height: $height")
+                    if (height > width) {
+                        resizeImage = resizeImage(letter, newHeight = 1000.0, newWidth = null)
+
+                    } else {
+                        resizeImage = resizeImage(letter, newHeight = null, newWidth = 1000.0)
+                    }
+                    Imgproc.dilate(letter, letter, Mat(), Point(-1.0, -1.0))
+                    resizeImage = imagePadding(resizeImage, 128)
                     Imgproc.resize(resizeImage, resizeImage, sz2)
-//                    Imgproc.dilate(resizeImage, resizeImage, Mat(), Point(-1.0, -1.0))
+//                    val element2 = Imgproc.getStructuringElement(
+//                        Imgproc.MORPH_RECT,
+//                        Size(2 * 0.5 + 1, 2 * 0.5 + 1),
+//                        Point(1.0, 1.0)
+//                    )
                     println(resizeImage.dump())
                     println(" a")
                     println(" ")
@@ -180,19 +199,42 @@ object OpticalCharacterDetector {
         inferenceListener.finished(dataList)
     }
 
+    private fun resizeImage (mat: Mat, newHeight: Double?, newWidth: Double?): Mat {
+        val result = Mat()
+        var size: Size
+        val width = mat.width()
+        val height = mat.height()
+        val ratio: Double
+
+        when {
+            newWidth == null -> {
+                ratio = newHeight!! / height.toDouble()
+                size = Size((width * ratio), newHeight)
+            }
+            newHeight == null -> {
+                ratio = newWidth / width.toDouble()
+                size = Size(newWidth, (height * ratio))
+            }
+            else -> return mat
+        }
+
+        Imgproc.resize(mat, result, size)
+
+        return result
+    }
+
     private fun formSentences(mat: Mat): ArrayList<Mat> {
         val sentences = ArrayList<Mat>()
         val segmentIndices = ArrayList<Int>()
         val sumRange = FloatArray(mat.height()) { 0.0f }
         val segmentList = BooleanArray(mat.height()) { false }
-        var segmentCounter = 0
+        var segmentPositionEnd = -1
         var segmentPositionStart = -1
 
         for(i in 0 until mat.height()) {
             for(j in 0 until mat.width()) {
                 sumRange[i] += mat[i, j][0].toFloat()
             }
-//            sumRange[i] += 255.0f
         }
 
         val minVal = sumRange.min()!!
@@ -203,55 +245,94 @@ object OpticalCharacterDetector {
             }
         }
 
+        var initial = true
+
         for (k in 0 until segmentList.size) {
             if (segmentList[k]) {
-                segmentCounter++
-                if (segmentPositionStart == -1) {
+                if (segmentPositionStart == -1 && !initial) {
                     segmentPositionStart = k
                 }
+                if (initial) initial = false
+                if (segmentPositionEnd != -1) {
+                    segmentIndices.add(k)
+//                    segmentIndices.add((segmentPositionStart + (k - segmentPositionStart) / 2))
+                    segmentPositionEnd = -1
+                }
             } else {
+                if (segmentPositionEnd == -1) {
+                    segmentPositionEnd = k - 1
+                }
+
                 if (segmentPositionStart != -1) {
-                    segmentIndices.add((segmentPositionStart + (k - segmentPositionStart) / 2))
+                    segmentIndices.add(k)
+//                    segmentIndices.add((segmentPositionStart + (k - segmentPositionStart) / 2))
                     segmentPositionStart = -1
                 }
             }
         }
 
-        segmentIndices.add((segmentPositionStart + (mat.height() - segmentPositionStart) / 2))
+//        segmentIndices.add((segmentPositionStart + (mat.height() - segmentPositionStart) / 2))
+
+        println("log_tag segmentIndicies size: ${segmentIndices.size}")
+        segmentIndices.forEach { println("log_tag segmentIndices: $it") }
+//        try {
+//            var segmentRectangleStart = segmentIndices[0]
+//            for (x in 1 until segmentIndices.size) {
+//                val temp = mat.clone()
+//                val rect = Rect(0, segmentRectangleStart, mat.width(), segmentIndices[x] - segmentRectangleStart)
+//                segmentRectangleStart = segmentIndices[x]
+//                val cropped = Mat(temp, rect)
+//                sentences.add(cropped)
+//            }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
+
+        println("log_tag: size: ${segmentIndices.size}")
+        segmentIndices.forEach { println("log_tag: segmentIndices: $it") }
 
         try {
-            var segmentRectangleStart = segmentIndices[0]
-            for (x in 1 until segmentIndices.size) {
+//            var segmentRectangleStart = segmentIndices[0]
+            for (x in 0 until segmentIndices.size step 2) {
                 val temp = mat.clone()
-                val rect = Rect(0, segmentRectangleStart, mat.width(), segmentIndices[x] - segmentRectangleStart)
-                segmentRectangleStart = segmentIndices[x]
+                val rect = Rect(0, segmentIndices[x], mat.width(), segmentIndices[x+1] - segmentIndices[x])
+//                segmentRectangleStart = segmentIndices[x]
                 val cropped = Mat(temp, rect)
+//                var resizeImage = Mat()
+//                val height = cropped.height()
+//                val width = cropped.width()
+//                if (height > width) {
+//                    resizeImage = resizeImage(cropped, newHeight = 500.0, newWidth = null)
+//
+//                } else {
+//                    resizeImage = resizeImage(cropped, newHeight = null, newWidth = 500.0)
+//                }
+                println(cropped.dump())
+                    println(" a")
+                    println(" ")
+                    println(" a")
+                    println(" ")
+                    println(" a")
+                    println(" ")
+                    println(" a")
+                    println(" ")
+                    println(" a")
+                    println(" ")
+                    println(" a")
+                    println(" ")
                 sentences.add(cropped)
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
+//        return ArrayList()
         return sentences
     }
 
     private fun formLetters(mat: Mat): ArrayList<ArrayList<Mat>> {
         val words = ArrayList<ArrayList<Mat>>()
-//        println(mat.dump())
-//        println(" a")
-//        println(" ")
-//        println(" a")
-//        println(" ")
-//        println(" a")
-//        println(" ")
-//        println(" a")
-//        println(" ")
-//        println(" a")
-//        println(" ")
-//        println(" a")
-//        println(" ")
         val segmentColumnIndices = ArrayList<Int>()
-        var segmentCounter = 0
+        var segmentPositionEnd = -1
         var segmentPositionStart = -1
         val segmentList = BooleanArray(mat.width()) { false }
         val sumRange = FloatArray(mat.width()) { 0.0f }
@@ -264,32 +345,45 @@ object OpticalCharacterDetector {
 
         val minVal = sumRange.min()!!
 
-        println("log_tag: $minVal")
 
         for (k in 0 until sumRange.size) {
             if (sumRange[k] <= minVal*2) {
                 segmentList[k] = true
             }
         }
-
+        var initial = true
         for (k in 0 until segmentList.size) {
+//            if (segmentList[k]) {
+//                if (segmentPositionStart == -1) {
+//                    segmentPositionStart = k
+//                }
+//            } else {
+//                if (segmentPositionStart != -1) {
+//                    segmentColumnIndices.add((segmentPositionStart + (k - segmentPositionStart) / 2))
+//                    segmentPositionStart = -1
+//                }
+//            }
             if (segmentList[k]) {
-                segmentCounter++
-                if (segmentPositionStart == -1) {
-                    println("counter start")
+                if (segmentPositionStart == -1 && !initial) {
                     segmentPositionStart = k
                 }
+                if (initial) initial = false
+                if (segmentPositionEnd != -1) {
+                    segmentColumnIndices.add(k)
+                    segmentPositionEnd = -1
+                }
             } else {
+                if (segmentPositionEnd == -1) {
+                    segmentPositionEnd = k - 1
+                }
+
                 if (segmentPositionStart != -1) {
-                    println("adding")
-                    segmentColumnIndices.add((segmentPositionStart + (k - segmentPositionStart) / 2))
+                    segmentColumnIndices.add(k)
                     segmentPositionStart = -1
                 }
             }
         }
-        segmentColumnIndices.add((segmentPositionStart + (mat.width() - segmentPositionStart) / 2))
-
-        segmentColumnIndices.forEach { println("log_tag segmentIndices: $it") }
+//        segmentColumnIndices.add((segmentPositionStart + (mat.width() - segmentPositionStart) / 2))
 
         var minValDiff = 999
 
@@ -301,17 +395,15 @@ object OpticalCharacterDetector {
         }
 
         var tempLetterList = ArrayList<Mat>()
-        var segmentRectangleStart = segmentColumnIndices[0]
+//        var segmentRectangleStart = segmentColumnIndices[0]
 
-        for (i in 1 until segmentColumnIndices.size) {
-            val temp = segmentColumnIndices[i] - segmentColumnIndices[i-1]
+        for (i in 0 until segmentColumnIndices.size step 2) {
+            val temp = segmentColumnIndices[i+1] - segmentColumnIndices[i]
             if (temp >= minValDiff * 1.2) {
                 words.add(tempLetterList)
                 tempLetterList = ArrayList()
             }
-            println("log_tag $segmentRectangleStart, 0, ${mat.width()}, ${segmentColumnIndices[i] - segmentRectangleStart}")
-            val rect = Rect(segmentRectangleStart, 0, segmentColumnIndices[i] - segmentRectangleStart, mat.height())
-            segmentRectangleStart = segmentColumnIndices[i]
+            val rect = Rect(segmentColumnIndices[i], 0, segmentColumnIndices[i+1] - segmentColumnIndices[i], mat.height())
             val cropped = Mat(mat, rect)
             tempLetterList.add(cropped)
         }
@@ -398,6 +490,8 @@ object OpticalCharacterDetector {
             rightPadding = (blockSize - height % blockSize) / 2
             leftPadding = rightPadding
         }
+
+        println("log_tag padding: $leftPadding, $rightPadding, $topPadding, $bottomPadding")
 
         Core.copyMakeBorder(
             source,
