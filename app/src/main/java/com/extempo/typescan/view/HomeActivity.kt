@@ -27,6 +27,8 @@ import com.extempo.opticalcharacterrecognizer.utilities.OpticalCharacterDetector
 import com.extempo.typescan.R
 import com.extempo.typescan.adapter.DocumentPagedListAdapter
 import com.extempo.typescan.databinding.ActivityHomeBinding
+import com.extempo.typescan.model.Author
+import com.extempo.typescan.model.repository.AuthorRepository
 import com.extempo.typescan.utilities.InjectorUtils
 import com.extempo.typescan.utilities.ModuleLoader
 import com.extempo.typescan.viewmodel.HomeActivityViewModel
