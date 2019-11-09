@@ -26,8 +26,9 @@ object DocumentDatabaseRepository {
     }
 
     @WorkerThread
-    fun updateDocumentItem(documentItem: DocumentItem, context: Context) {
+    fun updateDocumentItem(documentItem: DocumentItem, data: ArrayList<String>, context: Context) {
         ThreadManagement.databaseExecutor.execute {
+            documentItem.generateOutputFile(context, data)
             DocumentDatabase.getInstance(context).documentItemDao().updateDocumentItem(documentItem)
         }
     }

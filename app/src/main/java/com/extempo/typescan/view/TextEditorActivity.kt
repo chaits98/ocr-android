@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -20,14 +21,17 @@ import com.extempo.typescan.databinding.ActivityTextEditorBinding
 import com.extempo.typescan.model.DocumentItem
 import com.extempo.typescan.utilities.InjectorUtils
 import com.extempo.typescan.viewmodel.TextEditorActivityViewModel
+import kotlinx.android.synthetic.main.activity_text_editor.*
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader
+import java.lang.Exception
 
 class TextEditorActivity : AppCompatActivity() {
 
     var binding: ActivityTextEditorBinding? = null
     var viewModel: TextEditorActivityViewModel? = null
+    var isNew: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,15 +39,15 @@ class TextEditorActivity : AppCompatActivity() {
         initializeUI()
     }
 
-    fun initializeUI() {
+    private fun initializeUI() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_text_editor)
         val factory = InjectorUtils.provideTextEditorActivityViewModelFactory(this)
         viewModel = ViewModelProviders.of(this, factory).get(TextEditorActivityViewModel::class.java)
 
-        val isNew = intent.getBooleanExtra(HomeActivity.TEXT_EDITOR_NEW, false)
+        isNew = intent.getBooleanExtra(HomeActivity.TEXT_EDITOR_NEW, false)
 
-        if (isNew) {
+        if (isNew!!) {
             val result = intent.getParcelableExtra<Uri>(HomeActivity.TEXT_EDITOR_DATA)
             Glide.with(this)
                 .asBitmap()
@@ -57,6 +61,8 @@ class TextEditorActivity : AppCompatActivity() {
                             dataList.forEach { dataString += "$it\n" }
                             binding?.documentData = dataString
                         })
+                        viewModel?.documentItem = DocumentItem("", "")
+                        binding?.documentItem = viewModel?.documentItem
                     }
                     override fun onLoadCleared(placeholder: Drawable?) {
 
@@ -65,12 +71,53 @@ class TextEditorActivity : AppCompatActivity() {
         } else {
             var dataString = ""
             val documentItem = intent.getSerializableExtra(HomeActivity.TEXT_EDITOR_DOCUMENT_ITEM) as DocumentItem
-            val file = File(this.filesDir, documentItem.filename)
-            val fileInputStream = FileInputStream(file)
-            val inputStreamReader = InputStreamReader(fileInputStream)
-            inputStreamReader.forEachLine {data->
-                dataString += data
+            viewModel?.documentItem = documentItem
+            binding?.documentItem = viewModel?.documentItem
+//            val dir = File(this.filesDir.path, "text")
+            if (this.filesDir.exists()) {
+                try {
+                    val file = File(this.filesDir, documentItem.filename + ".txt")
+                    val fileInputStream = FileInputStream(file)
+                    val inputStreamReader = InputStreamReader(fileInputStream)
+
+                    inputStreamReader.forEachLine {data->
+                        dataString += data
+                    }
+                } catch (ex: Exception) {
+                    ex.printStackTrace()
+                }
+            } else {
+                Toast.makeText(this, "Error reading file", Toast.LENGTH_SHORT).show()
             }
+        }
+        initializeListeners()
+    }
+
+    private fun initializeListeners() {
+        text_editor_save_button.setOnClickListener {
+            viewModel?.documentItem?.let {docItem->
+                if (text_editor_author.text.toString().isNotBlank() && text_editor_title.text.toString().isNotBlank()) {
+                    viewModel?.textList?.let {textList->
+                        docItem.author = text_editor_author.text.toString()
+                        docItem.title = text_editor_title.text.toString()
+                        docItem.generateFilename()
+                        binding?.documentItem = docItem
+                        if (isNew!!) {
+                            viewModel?.insertDocumentItem(docItem, textList).also {
+                                finish()
+                            }
+                        } else {
+                            viewModel?.updateDocumentItem(docItem, textList).also {
+                                finish()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        text_editor_cancel_button.setOnClickListener {
+            finish()
         }
     }
 
@@ -80,6 +127,22 @@ class TextEditorActivity : AppCompatActivity() {
         fun loadDocumentContent(et: EditText, data: String?) {
             data?.let {
                 et.setText(it, TextView.BufferType.EDITABLE)
+            }
+        }
+
+        @JvmStatic
+        @BindingAdapter("bind:author")
+        fun loadAuthor(et: EditText, data: DocumentItem?) {
+            data?.let {
+                et.setText(it.author, TextView.BufferType.EDITABLE)
+            }
+        }
+
+        @JvmStatic
+        @BindingAdapter("bind:title")
+        fun loadtitle(et: EditText, data: DocumentItem?) {
+            data?.let {
+                et.setText(it.title, TextView.BufferType.EDITABLE)
             }
         }
     }
