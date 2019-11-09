@@ -36,6 +36,7 @@ class TextEditorActivityViewModel(private val documentRepository: DocumentReposi
     }
 
     fun insertDocumentItem(documentItem: DocumentItem, data: ArrayList<String>) {
+        data.forEach { println("log_tag doc item view model $it") }
         documentRepository.insertDocumentItem(documentItem, data)
     }
 

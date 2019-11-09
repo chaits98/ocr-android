@@ -20,6 +20,7 @@ object DocumentDatabaseRepository {
     @WorkerThread
     fun insertDocumentItem(documentItem: DocumentItem, data: ArrayList<String>, context: Context) {
         ThreadManagement.databaseExecutor.execute {
+            data.forEach { println("log_tag doc item db repo $it") }
             documentItem.generateOutputFile(context, data)
             DocumentDatabase.getInstance(context).documentItemDao().insertDocument(documentItem)
         }

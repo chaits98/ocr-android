@@ -13,6 +13,7 @@ class DocumentRepository(private val context: Context) {
     }
 
     fun insertDocumentItem(documentItem: DocumentItem, data: ArrayList<String>) {
+        data.forEach { println("log_tag doc item repo $it") }
         return DocumentDatabaseRepository.insertDocumentItem(documentItem, data, context)
     }
 

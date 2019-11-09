@@ -26,6 +26,8 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.lang.Exception
+import java.util.*
+import kotlin.collections.ArrayList
 
 class TextEditorActivity : AppCompatActivity() {
 
@@ -80,9 +82,14 @@ class TextEditorActivity : AppCompatActivity() {
                     val fileInputStream = FileInputStream(file)
                     val inputStreamReader = InputStreamReader(fileInputStream)
 
-                    inputStreamReader.forEachLine {data->
+                    val dataList = inputStreamReader.readLines()
+
+                    dataList.forEach {data->
+                        println("log_tag" + data)
                         dataString += data
                     }
+                    binding?.documentData = dataString
+                    viewModel?.textList  = dataList as ArrayList<String>
                 } catch (ex: Exception) {
                     ex.printStackTrace()
                 }
@@ -95,6 +102,13 @@ class TextEditorActivity : AppCompatActivity() {
 
     private fun initializeListeners() {
         text_editor_save_button.setOnClickListener {
+            val dataList = ArrayList<String>()
+            val tokens = StringTokenizer(text_editor_content_text.text.toString(), "\n\r")
+            while(tokens.hasMoreTokens()) {
+                dataList.add(tokens.nextToken())
+            }
+            dataList.forEach { println("log_tag dataList writing: $it") }
+            viewModel?.textList = dataList
             viewModel?.documentItem?.let {docItem->
                 if (text_editor_author.text.toString().isNotBlank() && text_editor_title.text.toString().isNotBlank()) {
                     viewModel?.textList?.let {textList->
@@ -126,6 +140,7 @@ class TextEditorActivity : AppCompatActivity() {
         @BindingAdapter("bind:editableText")
         fun loadDocumentContent(et: EditText, data: String?) {
             data?.let {
+                println("log_tag: documentContent $data")
                 et.setText(it, TextView.BufferType.EDITABLE)
             }
         }

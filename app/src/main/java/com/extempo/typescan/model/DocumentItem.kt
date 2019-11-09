@@ -31,6 +31,7 @@ data class DocumentItem(
     }
 
     fun generateOutputFile(context: Context, data: ArrayList<String>) {
+        data.forEach { println("log_tag doc item class $it") }
         this.generateFilename()
         context.filesDir.mkdirs()
         try {
