@@ -25,6 +25,7 @@ object OpticalCharacterDetector {
     private var modelFile = "model.tflite"
     private var tflite: Interpreter? = null
     private var labelList: List<String>? = null
+    private const val IM_DIMEN = 64
 
     fun loadModel(activity: Activity) {
         try {
@@ -75,7 +76,7 @@ object OpticalCharacterDetector {
                 val cropped = Mat(result, rect)
                 var resizeImage = Mat()
                 val sz = Size(100.0, 100.0)
-                val sz2 = Size(28.0, 28.0)
+                val sz2 = Size(IM_DIMEN.toDouble(), IM_DIMEN.toDouble())
                 Imgproc.resize(cropped, resizeImage, sz)
                 Log.d("log_tag", "${cropped.width()} ${cropped.height()} ${cropped[0, 0].size}")
                 resizeImage = imagePadding(resizeImage, 128)
@@ -156,7 +157,7 @@ object OpticalCharacterDetector {
                 for (letter in word) {
                     var resizeImage = Mat()
 //                    val sz = Size(100.0, 100.0)
-                    val sz2 = Size(28.0, 28.0)
+                    val sz2 = Size(IM_DIMEN.toDouble(), IM_DIMEN.toDouble())
 //                    Imgproc.resize(letter, resizeImage, sz)
                     val width = letter.width()
                     val height = letter.height()
@@ -168,7 +169,7 @@ object OpticalCharacterDetector {
                         resizeImage = resizeImage(letter, newHeight = null, newWidth = 1000.0)
                     }
                     Imgproc.dilate(letter, letter, Mat(), Point(-1.0, -1.0))
-                    resizeImage = imagePadding(resizeImage, 128)
+                    resizeImage = imagePadding(resizeImage, 1280)
                     Imgproc.resize(resizeImage, resizeImage, sz2)
 //                    val element2 = Imgproc.getStructuringElement(
 //                        Imgproc.MORPH_RECT,
@@ -307,19 +308,19 @@ object OpticalCharacterDetector {
 //                } else {
 //                    resizeImage = resizeImage(cropped, newHeight = null, newWidth = 500.0)
 //                }
-                println(cropped.dump())
-                    println(" a")
-                    println(" ")
-                    println(" a")
-                    println(" ")
-                    println(" a")
-                    println(" ")
-                    println(" a")
-                    println(" ")
-                    println(" a")
-                    println(" ")
-                    println(" a")
-                    println(" ")
+//                println(cropped.dump())
+//                    println(" a")
+//                    println(" ")
+//                    println(" a")
+//                    println(" ")
+//                    println(" a")
+//                    println(" ")
+//                    println(" a")
+//                    println(" ")
+//                    println(" a")
+//                    println(" ")
+//                    println(" a")
+//                    println(" ")
                 sentences.add(cropped)
             }
         } catch (e: Exception) {
@@ -468,7 +469,7 @@ object OpticalCharacterDetector {
                 mat[j, column][0] = 255.0
             }
         }
-        print(mat.dump())
+//        print(mat.dump())
 
         return result
     }
@@ -518,10 +519,10 @@ object OpticalCharacterDetector {
 
     private fun findCharacter(mat: Mat): Result {
         val transposedMat = Mat()
-        Core.transpose(mat, transposedMat)
+//        Core.transpose(mat, transposedMat)
         var result = -1
-        val data = reshapeData(transposedMat)
-        var output = Array(1) { FloatArray(47) }
+        val data = reshapeData(mat)
+        var output = Array(1) { FloatArray(48) }
         tflite?.run(data, output)
         var max = 0.0f
         for (i in 0..46) {
@@ -531,6 +532,7 @@ object OpticalCharacterDetector {
             }
         }
         return if (result > -1) {
+            println("log_tag: $result")
             Result(output[0][result], labelList?.get(result)!!)
         } else {
             Result(0.0f, "")
@@ -538,9 +540,9 @@ object OpticalCharacterDetector {
     }
 
     private fun reshapeData(mat: Mat): Array<Array<Array<FloatArray>>> {
-        val data = Array(1) { Array(28) { Array(28) { FloatArray(1) } } }
-        for (i in 0..27) {
-            for (j in 0..27) {
+        val data = Array(1) { Array(IM_DIMEN) { Array(IM_DIMEN) { FloatArray(1) } } }
+        for (i in 0 until IM_DIMEN) {
+            for (j in 0 until IM_DIMEN) {
                 data[0][i][j][0] = mat[i, j][0].toFloat()
             }
         }
@@ -558,6 +560,9 @@ object OpticalCharacterDetector {
             labels.add(line)
         }
         reader.close()
+        for (i in 0 until labels.size) {
+            println("log_tag: $i ${labels[i]}")
+        }
         return labels
     }
 

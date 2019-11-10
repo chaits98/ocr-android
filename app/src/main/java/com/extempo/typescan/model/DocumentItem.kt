@@ -34,6 +34,7 @@ data class DocumentItem(
         data.forEach { println("log_tag doc item class $it") }
         this.generateFilename()
         context.filesDir.mkdirs()
+        println("log_tag content: $data")
         try {
             val file = File(context.filesDir, this.filename + ".txt")
             println("log_tag: ${file.path}")
