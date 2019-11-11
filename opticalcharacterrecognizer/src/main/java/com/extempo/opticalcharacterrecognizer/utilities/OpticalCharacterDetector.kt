@@ -22,10 +22,10 @@ import java.util.concurrent.ThreadPoolExecutor
 
 
 object OpticalCharacterDetector {
-    private var modelFile = "merged64.tflite"
     private var tflite: Interpreter? = null
     private var labelList: List<String>? = null
     private const val IM_DIMEN = 64
+    private var modelFile = "merged$IM_DIMEN.tflite"
 
     fun loadModel(activity: Activity) {
         try {
@@ -155,21 +155,25 @@ object OpticalCharacterDetector {
             val words = formLetters(sentence)
             for (word in words) {
                 for (letter in word) {
-                    var resizeImage = Mat()
-//                    val sz = Size(100.0, 100.0)
+                    var resizeImage: Mat
+                    var contours = ArrayList<MatOfPoint>()
+                    Imgproc.findContours(letter, contours, Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
+//                    val szc = Size
+                    val rectCrop = Imgproc.boundingRect(contours[0])
+                    val cropped = Mat(letter, rectCrop)
                     val sz2 = Size(IM_DIMEN.toDouble(), IM_DIMEN.toDouble())
 //                    Imgproc.resize(letter, resizeImage, sz)
-                    val width = letter.width()
-                    val height = letter.height()
+                    val width = cropped.width()
+                    val height = cropped.height()
 //                    println("log_tag: width: $width, height: $height")
                     if (height > width) {
-                        resizeImage = resizeImage(letter, newHeight = 1000.0, newWidth = null)
+                        resizeImage = resizeImage(cropped, newHeight = 1000.0, newWidth = null)
 
                     } else {
-                        resizeImage = resizeImage(letter, newHeight = null, newWidth = 1000.0)
+                        resizeImage = resizeImage(cropped, newHeight = null, newWidth = 1000.0)
                     }
-                    Imgproc.dilate(letter, letter, Mat(), Point(-1.0, -1.0))
-                    resizeImage = imagePadding(resizeImage, 1280)
+                    Imgproc.dilate(resizeImage, resizeImage, Mat(), Point(-1.0, -1.0))
+                    resizeImage = imagePadding(resizeImage, 2000)
                     Imgproc.resize(resizeImage, resizeImage, sz2)
 //                    val element2 = Imgproc.getStructuringElement(
 //                        Imgproc.MORPH_RECT,
@@ -386,21 +390,21 @@ object OpticalCharacterDetector {
         }
 //        segmentColumnIndices.add((segmentPositionStart + (mat.width() - segmentPositionStart) / 2))
 
-        var minValDiff = 999
+        var wordThreshold = 0.10 * mat.height()
 
-        for (i in 1 until segmentColumnIndices.size) {
-            val temp = segmentColumnIndices[i] - segmentColumnIndices[i-1]
-            if (temp < minValDiff) {
-                minValDiff = temp
-            }
-        }
+//        for (i in 1 until segmentColumnIndices.size) {
+//            val temp = segmentColumnIndices[i] - segmentColumnIndices[i-1]
+//            if (temp > maxValDiff) {
+//                maxValDiff = temp
+//            }
+//        }
 
         var tempLetterList = ArrayList<Mat>()
 //        var segmentRectangleStart = segmentColumnIndices[0]
 
         for (i in 0 until segmentColumnIndices.size step 2) {
             val temp = segmentColumnIndices[i+1] - segmentColumnIndices[i]
-            if (temp >= minValDiff * 1.2) {
+            if (temp > wordThreshold) {
                 words.add(tempLetterList)
                 tempLetterList = ArrayList()
             }
@@ -469,12 +473,11 @@ object OpticalCharacterDetector {
                 mat[j, column][0] = 255.0
             }
         }
-//        print(mat.dump())
 
         return result
     }
 
-    private fun imagePadding(source: Mat, blockSize: Int): Mat {
+    fun imagePadding(source: Mat, blockSize: Int): Mat {
         val width = source.width()
         val height = source.height()
         var bottomPadding = 0
@@ -482,17 +485,10 @@ object OpticalCharacterDetector {
         var topPadding = 0
         var leftPadding = 0
 
-        if (width % blockSize != 0) {
-            bottomPadding = (blockSize - width % blockSize) / 2
-            topPadding = bottomPadding
-        }
-
-        if (height % blockSize != 0) {
-            rightPadding = (blockSize - height % blockSize) / 2
-            leftPadding = rightPadding
-        }
-
-        println("log_tag padding: $leftPadding, $rightPadding, $topPadding, $bottomPadding")
+        rightPadding = (blockSize - width) / 2
+        leftPadding = blockSize - (rightPadding + width)
+        topPadding = (blockSize - height) / 2
+        bottomPadding = blockSize - (topPadding + height)
 
         Core.copyMakeBorder(
             source,
@@ -532,10 +528,9 @@ object OpticalCharacterDetector {
             }
         }
 
-        result--
         return if (result > -1) {
             println("log_tag: $result")
-            Result(output[0][result], labelList?.get(result)!!)
+            Result(output[0][result], labelList?.get(result-1)!!)
         } else {
             Result(0.0f, "")
         }
@@ -545,7 +540,7 @@ object OpticalCharacterDetector {
         val data = Array(1) { Array(IM_DIMEN) { Array(IM_DIMEN) { FloatArray(1) } } }
         for (i in 0 until IM_DIMEN) {
             for (j in 0 until IM_DIMEN) {
-                data[0][i][j][0] = mat[i, j][0].toFloat()
+                data[0][i][j][0] = if(mat[i, j][0].toFloat() > 0) 255.0f else 0.0f
             }
         }
         return data
@@ -673,5 +668,62 @@ object OpticalCharacterDetector {
         val startOffset = fileDescriptor.startOffset
         val declaredLength = fileDescriptor.declaredLength
         return fileChannel.map(READ_ONLY, startOffset, declaredLength)
+    }
+
+
+    private val mapper = hashMapOf(
+        "0" to arrayListOf("O", "D"),
+        "1" to arrayListOf("L", "I", "J", "7"),
+        "2" to arrayListOf("Z"),
+        "3" to emptyList<String>(),
+        "4" to arrayListOf("Y"),
+        "5" to emptyList<String>(),
+        "6" to emptyList<String>(),
+        "7" to arrayListOf("I", "L", "1"),
+        "8" to emptyList<String>(),
+        "9" to emptyList<String>(),
+        "a" to arrayListOf("0", "D", "O"),
+        "b" to arrayListOf("f"),
+        "d" to emptyList<String>(),
+        "e" to emptyList<String>(),
+        "f" to arrayListOf("b"),
+        "g" to emptyList<String>(),
+        "h" to arrayListOf("n"),
+        "n" to arrayListOf("h", "r"),
+        "q" to emptyList<String>(),
+        "r" to arrayListOf("M", "H"),
+        "t" to arrayListOf("E"),
+        "A" to emptyList<String>(),
+        "B" to emptyList<String>(),
+        "C" to emptyList<String>(),
+        "D" to arrayListOf("0", "O"),
+        "E" to arrayListOf("t"),
+        "F" to emptyList<String>(),
+        "G" to emptyList<String>(),
+        "H" to arrayListOf("M"),
+        "I" to arrayListOf("L", "1", "J", "7"),
+        "J" to arrayListOf("I", "Y"),
+        "K" to emptyList<String>(),
+        "L" to emptyList<String>(),
+        "M" to arrayListOf("H"),
+        "N" to emptyList<String>(),
+        "O" to arrayListOf("D", "0"),
+        "P" to emptyList<String>(),
+        "Q" to emptyList<String>(),
+        "R" to emptyList<String>(),
+        "S" to emptyList<String>(),
+        "T" to emptyList<String>(),
+        "U" to emptyList<String>(),
+        "V" to emptyList<String>(),
+        "W" to emptyList<String>(),
+        "X" to emptyList<String>(),
+        "Y" to arrayListOf("J"),
+        "Z" to arrayListOf("2")
+    )
+
+    fun getInterchangableCharacterList(str: String): ArrayList<String> {
+        var output = ArrayList<String>()
+        output = mapper[str] as ArrayList<String>
+        return output
     }
 }
