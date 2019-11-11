@@ -22,7 +22,7 @@ import java.util.concurrent.ThreadPoolExecutor
 
 
 object OpticalCharacterDetector {
-    private var modelFile = "model.tflite"
+    private var modelFile = "merged64.tflite"
     private var tflite: Interpreter? = null
     private var labelList: List<String>? = null
     private const val IM_DIMEN = 64
@@ -202,7 +202,7 @@ object OpticalCharacterDetector {
 
     private fun resizeImage (mat: Mat, newHeight: Double?, newWidth: Double?): Mat {
         val result = Mat()
-        var size: Size
+        val size: Size
         val width = mat.width()
         val height = mat.height()
         val ratio: Double
@@ -525,12 +525,14 @@ object OpticalCharacterDetector {
         var output = Array(1) { FloatArray(48) }
         tflite?.run(data, output)
         var max = 0.0f
-        for (i in 0..46) {
+        for (i in 0..47) {
             if (output[0][i] > max) {
                 max = output[0][i]
                 result = i
             }
         }
+
+        result--
         return if (result > -1) {
             println("log_tag: $result")
             Result(output[0][result], labelList?.get(result)!!)
@@ -580,7 +582,7 @@ object OpticalCharacterDetector {
             val r = Imgproc.boundingRect(c)
             var top = r.tl().y
             var bottom = r.br().y
-            var left = r.tl().x
+            val left = r.tl().x
             var right = r.br().x
             while (true) {
                 if(index >= sortedContours.size - 2){
