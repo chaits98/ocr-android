@@ -9,23 +9,27 @@ import org.opencv.android.Utils
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
 import org.tensorflow.lite.Interpreter
-import java.io.FileInputStream
-import java.io.IOException
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel.MapMode.READ_ONLY
 import org.opencv.core.Mat
 import org.opencv.core.Scalar
 import org.opencv.core.Core
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import java.util.concurrent.ThreadPoolExecutor
+import android.R.attr.path
+import android.content.Context
+import android.os.Environment
+import org.opencv.imgcodecs.Imgcodecs
+import java.io.*
+import java.util.*
+import kotlin.Comparator
+import kotlin.collections.ArrayList
 
 
 object OpticalCharacterDetector {
-    private var modelFile = "merged64.tflite"
+    private var modelFile = "merged128.tflite"
     private var tflite: Interpreter? = null
     private var labelList: List<String>? = null
-    private const val IM_DIMEN = 64
+    private const val IM_DIMEN = 128
 
     fun loadModel(activity: Activity) {
         try {
@@ -116,7 +120,7 @@ object OpticalCharacterDetector {
     }
 
     @Throws(Exception::class)
-    fun findAlphabets2 (bitmap: Bitmap, inferenceListener: InferenceListener) {
+    fun findAlphabets2 (bitmap: Bitmap, inferenceListener: InferenceListener, context: Context) {
         var dataList: ArrayList<String> = ArrayList()
 
         inferenceListener.started()
@@ -155,18 +159,22 @@ object OpticalCharacterDetector {
             val words = formLetters(sentence)
             for (word in words) {
                 for (letter in word) {
-                    var resizeImage = Mat()
+                    var resizeImage: Mat
+                    var contours = ArrayList<MatOfPoint>()
+                    Imgproc.findContours(letter, contours, Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
+//                    val szc = Size
+                    val rectCrop = Imgproc.boundingRect(contours[0])
+                    val cropped = Mat(letter, rectCrop)
 //                    val sz = Size(100.0, 100.0)
                     val sz2 = Size(IM_DIMEN.toDouble(), IM_DIMEN.toDouble())
 //                    Imgproc.resize(letter, resizeImage, sz)
-                    val width = letter.width()
-                    val height = letter.height()
+                    val width = cropped.width()
+                    val height = cropped.height()
 //                    println("log_tag: width: $width, height: $height")
-                    if (height > width) {
-                        resizeImage = resizeImage(letter, newHeight = 1000.0, newWidth = null)
-
+                    resizeImage = if (height > width) {
+                        resizeImage(letter, newHeight = 1000.0, newWidth = null)
                     } else {
-                        resizeImage = resizeImage(letter, newHeight = null, newWidth = 1000.0)
+                        resizeImage(letter, newHeight = null, newWidth = 1000.0)
                     }
                     Imgproc.dilate(letter, letter, Mat(), Point(-1.0, -1.0))
                     resizeImage = imagePadding(resizeImage, 1280)
@@ -190,8 +198,11 @@ object OpticalCharacterDetector {
                     println(" a")
                     println(" ")
                     val  result2 = findCharacter(resizeImage)
-                    s += result2.getCharacter()
+                    s += result2.getCharacter().toLowerCase(Locale.getDefault())
                     println("log_tag character found: ${result2.getCharacter()} with confidence: ${result2.getConfidence()*100}%")
+
+                    val file = File(context.filesDir, result2.getCharacter() + result2.getConfidence() + ".png")
+                    Imgcodecs.imwrite(file.toString(), resizeImage)
                 }
                 s += " "
             }
@@ -386,27 +397,28 @@ object OpticalCharacterDetector {
         }
 //        segmentColumnIndices.add((segmentPositionStart + (mat.width() - segmentPositionStart) / 2))
 
-        var minValDiff = 999
+        var wordThreshold = 0.45 * mat.height()
 
-        for (i in 1 until segmentColumnIndices.size) {
-            val temp = segmentColumnIndices[i] - segmentColumnIndices[i-1]
-            if (temp < minValDiff) {
-                minValDiff = temp
-            }
-        }
+//        for (i in 1 until segmentColumnIndices.size) {
+//            val temp = segmentColumnIndices[i] - segmentColumnIndices[i-1]
+//            if (temp < minValDiff) {
+//                minValDiff = temp
+//            }
+//        }
 
         var tempLetterList = ArrayList<Mat>()
 //        var segmentRectangleStart = segmentColumnIndices[0]
 
         for (i in 0 until segmentColumnIndices.size step 2) {
-            val temp = segmentColumnIndices[i+1] - segmentColumnIndices[i]
-            if (temp >= minValDiff * 1.2) {
-                words.add(tempLetterList)
-                tempLetterList = ArrayList()
-            }
+            var temp = 0
+            if (i != segmentColumnIndices.size - 2) temp = segmentColumnIndices[i+2] - segmentColumnIndices[i+1]
             val rect = Rect(segmentColumnIndices[i], 0, segmentColumnIndices[i+1] - segmentColumnIndices[i], mat.height())
             val cropped = Mat(mat, rect)
             tempLetterList.add(cropped)
+            if (temp >= wordThreshold) {
+                words.add(tempLetterList)
+                tempLetterList = ArrayList()
+            }
         }
         words.add(tempLetterList)
 
@@ -483,13 +495,13 @@ object OpticalCharacterDetector {
         var leftPadding = 0
 
         if (width % blockSize != 0) {
-            bottomPadding = (blockSize - width % blockSize) / 2
-            topPadding = bottomPadding
+            rightPadding = (blockSize - width % blockSize) / 2
+            leftPadding = rightPadding
         }
 
         if (height % blockSize != 0) {
-            rightPadding = (blockSize - height % blockSize) / 2
-            leftPadding = rightPadding
+            topPadding = (blockSize - height % blockSize) / 2
+            bottomPadding = topPadding
         }
 
         println("log_tag padding: $leftPadding, $rightPadding, $topPadding, $bottomPadding")
