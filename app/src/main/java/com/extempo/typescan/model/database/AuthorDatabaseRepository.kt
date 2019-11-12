@@ -1,6 +1,5 @@
 package com.extempo.typescan.model.database
 
-import android.app.Activity
 import android.content.Context
 import androidx.annotation.WorkerThread
 import com.extempo.typescan.model.Author

@@ -9,13 +9,13 @@ import kotlin.collections.HashMap
 
 class Converters {
     @TypeConverter
-    fun fromString(value: String): HashMap<Char, ArrayList<Mat>?>? {
-        val mapType = object : TypeToken<HashMap<Char, ArrayList<Mat>?>?>() {}.type
+    fun fromString(value: String): HashMap<String, ArrayList<Mat>> {
+        val mapType = object : TypeToken<HashMap<String, ArrayList<Mat>>>() {}.type
         return Gson().fromJson(value, mapType)
     }
 
     @TypeConverter
-    fun fromHashMap(charMap: HashMap<Char, ArrayList<Mat>?>?): String {
+    fun fromHashMap(charMap: HashMap<String, ArrayList<Mat>>): String {
         val gson = Gson()
         return gson.toJson(charMap)
     }

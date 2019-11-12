@@ -53,14 +53,6 @@ object RectangleDetector {
 
 
         if (maxAreaContourID > -1) {
-//            Imgproc.drawContours(gray, contours, maxAreaContourID, Scalar(100.0, 0.0, 0.0, 0.8), 5)
-//            val bmp = Bitmap.createBitmap(
-//                gray.cols(), gray.rows(),
-//                Bitmap.Config.ARGB_8888
-//            )
-//            Utils.matToBitmap(gray, bmp)
-//            binding.imageBitmap = bmp
-
             return listOf(
                 Point(maxAreaApproxCurve.get(0,0)),
                 Point(maxAreaApproxCurve.get(1,0)),

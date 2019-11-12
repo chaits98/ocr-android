@@ -16,17 +16,20 @@ import org.opencv.core.Scalar
 import org.opencv.core.Core
 import java.io.*
 import android.content.Context
+import com.extempo.typescan.utilities.CharacterMapFactory
 import org.opencv.imgcodecs.Imgcodecs
 import java.util.*
 import kotlin.Comparator
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 object OpticalCharacterDetector {
     private var tflite: Interpreter? = null
     private var labelList: List<String>? = null
-    private const val IM_DIMEN = 64
+    private const val IM_DIMEN = 128
     private var modelFile = "merged$IM_DIMEN.tflite"
+    private var characterMap: HashMap<String, ArrayList<Mat>> = CharacterMapFactory.initCharMap()
 
     fun loadModel(activity: Activity) {
         try {
@@ -38,7 +41,6 @@ object OpticalCharacterDetector {
     }
 
     @Throws(Exception::class)
-//    fun findAlphabets(bitmap: Bitmap, inferenceListener: InferenceListener) {
     fun findAlphabets(bitmap: Bitmap, inferenceListener: InferenceListener) {
         var dataList: ArrayList<String> = ArrayList()
 
@@ -82,14 +84,6 @@ object OpticalCharacterDetector {
                 Log.d("log_tag", "${cropped.width()} ${cropped.height()} ${cropped[0, 0].size}")
                 resizeImage = imagePadding(resizeImage, 128)
                 Imgproc.resize(resizeImage, resizeImage, sz2)
-//                Imgproc.Canny(cropped, cropped, 120.0, 200.0)
-//                val element = Imgproc.getStructuringElement(
-//                Imgproc.MORPH_RECT,
-//                    Size(1.0, 1.0)
-//                )
-//                Imgproc.erode(cropped, cropped, element)
-//                var segmentedContours = segmentContour(cropped)
-//                println("log_tag: " + result.dump())
                 Imgproc.dilate(resizeImage, resizeImage, Mat(), Point(-1.0, -1.0))
                 print(resizeImage.dump())
                 val  result2 = findCharacter(resizeImage)
@@ -98,22 +92,8 @@ object OpticalCharacterDetector {
             }
             dataList.add(s)
         }
-
-
-
-//        for (cnt in contours) {
-//            val rect = Imgproc.boundingRect(cnt)
-//            Imgproc.rectangle(result, rect.tl(), rect.br(), Scalar(255.0, 110.0, 255.0))
-////            Imgproc.drawContours(result, contours, contours.indexOf(cnt), Scalar(100.0, 0.0, 0.0, 0.8), 2)
-//        }
-
-//        val bmp = Bitmap.createBitmap(
-//            result.cols(), result.rows(),
-//            Bitmap.Config.ARGB_8888
-//        )
-//        Utils.matToBitmap(result, bmp)
         dataList.forEach { println("dataList: $it") }
-        inferenceListener.finished(dataList)
+//        inferenceListener.finished(dataList)
     }
 
     @Throws(Exception::class)
@@ -127,8 +107,6 @@ object OpticalCharacterDetector {
         Utils.bitmapToMat(bitmap, tempMat)
         Imgproc.cvtColor(tempMat, source, Imgproc.COLOR_BGR2GRAY)
         var result = Mat()
-
-//        Imgproc.threshold(source, result, 150.0, 255.0, Imgproc.THRESH_BINARY_INV)
         Imgproc.adaptiveThreshold(
             source,
             result,
@@ -138,16 +116,6 @@ object OpticalCharacterDetector {
             101,
             40.0
         )
-//        val element = Imgproc.getStructuringElement(
-//            Imgproc.MORPH_RECT,
-//            Size(2.0, 2.0)
-//        )
-//        Imgproc.erode(result, result, element)
-//        val kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, Size(3.0, 3.0))
-//        Imgproc.morphologyEx(result, result, Imgproc.MORPH_CLOSE, kernel)
-////        Imgproc.dilate(result, result, element)
-//        Imgproc.dilate(result, result, Mat(), Point(-1.0, -1.0))
-//        println(result.dump())
 
         val sentences  = formSentences(result)
 
@@ -159,14 +127,11 @@ object OpticalCharacterDetector {
                     var resizeImage: Mat
                     var contours = ArrayList<MatOfPoint>()
                     Imgproc.findContours(letter, contours, Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
-//                    val szc = Size
                     val rectCrop = Imgproc.boundingRect(contours[0])
                     val cropped = Mat(letter, rectCrop)
                     val sz2 = Size(IM_DIMEN.toDouble(), IM_DIMEN.toDouble())
-//                    Imgproc.resize(letter, resizeImage, sz)
                     val width = cropped.width()
                     val height = cropped.height()
-//                    println("log_tag: width: $width, height: $height")
                     resizeImage = if (height > width) {
                         resizeImage(cropped, newHeight = 1000.0, newWidth = null)
 
@@ -176,28 +141,17 @@ object OpticalCharacterDetector {
                     Imgproc.dilate(resizeImage, resizeImage, Mat(), Point(-1.0, -1.0))
                     resizeImage = imagePadding(resizeImage, 2000)
                     Imgproc.resize(resizeImage, resizeImage, sz2)
-//                    val element2 = Imgproc.getStructuringElement(
-//                        Imgproc.MORPH_RECT,
-//                        Size(2 * 0.5 + 1, 2 * 0.5 + 1),
-//                        Point(1.0, 1.0)
-//                    )
-                    println(resizeImage.dump())
-                    println(" a")
-                    println(" ")
-                    println(" a")
-                    println(" ")
-                    println(" a")
-                    println(" ")
-                    println(" a")
-                    println(" ")
-                    println(" a")
-                    println(" ")
-                    println(" a")
-                    println(" ")
+
                     val  result2 = findCharacter(resizeImage)
+
+                    //Add mat to corresponding array of detected character
+                    this.characterMap[result2.getCharacter()]?.add(resizeImage)
+
+                    //Lowercase letters for easier spellchecking
                     s += result2.getCharacter().toLowerCase(Locale.getDefault())
                     println("log_tag character found: ${result2.getCharacter()} with confidence: ${result2.getConfidence()*100}%")
 
+                    //Save mat with inference information to a file
                     val file = File(context.filesDir, result2.getCharacter() + result2.getConfidence() + ".png")
                     Imgcodecs.imwrite(file.toString(), resizeImage)
                 }
@@ -205,7 +159,7 @@ object OpticalCharacterDetector {
             }
             dataList.add(s)
         }
-        inferenceListener.finished(dataList)
+        inferenceListener.finished(dataList, this.characterMap)
     }
 
     private fun resizeImage (mat: Mat, newHeight: Double?, newWidth: Double?): Mat {
@@ -264,7 +218,6 @@ object OpticalCharacterDetector {
                 if (initial) initial = false
                 if (segmentPositionEnd != -1) {
                     segmentIndices.add(k)
-//                    segmentIndices.add((segmentPositionStart + (k - segmentPositionStart) / 2))
                     segmentPositionEnd = -1
                 }
             } else {
@@ -274,67 +227,24 @@ object OpticalCharacterDetector {
 
                 if (segmentPositionStart != -1) {
                     segmentIndices.add(k)
-//                    segmentIndices.add((segmentPositionStart + (k - segmentPositionStart) / 2))
                     segmentPositionStart = -1
                 }
             }
         }
 
-//        segmentIndices.add((segmentPositionStart + (mat.height() - segmentPositionStart) / 2))
-
-        println("log_tag segmentIndicies size: ${segmentIndices.size}")
         segmentIndices.forEach { println("log_tag segmentIndices: $it") }
-//        try {
-//            var segmentRectangleStart = segmentIndices[0]
-//            for (x in 1 until segmentIndices.size) {
-//                val temp = mat.clone()
-//                val rect = Rect(0, segmentRectangleStart, mat.width(), segmentIndices[x] - segmentRectangleStart)
-//                segmentRectangleStart = segmentIndices[x]
-//                val cropped = Mat(temp, rect)
-//                sentences.add(cropped)
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
-
-        println("log_tag: size: ${segmentIndices.size}")
         segmentIndices.forEach { println("log_tag: segmentIndices: $it") }
 
         try {
-//            var segmentRectangleStart = segmentIndices[0]
             for (x in 0 until segmentIndices.size step 2) {
                 val temp = mat.clone()
                 val rect = Rect(0, segmentIndices[x], mat.width(), segmentIndices[x+1] - segmentIndices[x])
-//                segmentRectangleStart = segmentIndices[x]
                 val cropped = Mat(temp, rect)
-//                var resizeImage = Mat()
-//                val height = cropped.height()
-//                val width = cropped.width()
-//                if (height > width) {
-//                    resizeImage = resizeImage(cropped, newHeight = 500.0, newWidth = null)
-//
-//                } else {
-//                    resizeImage = resizeImage(cropped, newHeight = null, newWidth = 500.0)
-//                }
-//                println(cropped.dump())
-//                    println(" a")
-//                    println(" ")
-//                    println(" a")
-//                    println(" ")
-//                    println(" a")
-//                    println(" ")
-//                    println(" a")
-//                    println(" ")
-//                    println(" a")
-//                    println(" ")
-//                    println(" a")
-//                    println(" ")
                 sentences.add(cropped)
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
-//        return ArrayList()
         return sentences
     }
 
@@ -362,16 +272,6 @@ object OpticalCharacterDetector {
         }
         var initial = true
         for (k in 0 until segmentList.size) {
-//            if (segmentList[k]) {
-//                if (segmentPositionStart == -1) {
-//                    segmentPositionStart = k
-//                }
-//            } else {
-//                if (segmentPositionStart != -1) {
-//                    segmentColumnIndices.add((segmentPositionStart + (k - segmentPositionStart) / 2))
-//                    segmentPositionStart = -1
-//                }
-//            }
             if (segmentList[k]) {
                 if (segmentPositionStart == -1 && !initial) {
                     segmentPositionStart = k
@@ -392,23 +292,12 @@ object OpticalCharacterDetector {
                 }
             }
         }
-//        segmentColumnIndices.add((segmentPositionStart + (mat.width() - segmentPositionStart) / 2))
-
         var wordThreshold = 0.45 * mat.height()
-
-//        for (i in 1 until segmentColumnIndices.size) {
-//            val temp = segmentColumnIndices[i] - segmentColumnIndices[i-1]
-//            if (temp < minValDiff) {
-//                minValDiff = temp
-//            }
-//        }
-
         var tempLetterList = ArrayList<Mat>()
-//        var segmentRectangleStart = segmentColumnIndices[0]
-
+        println("log_tag: segment column indices size: " + segmentColumnIndices.size)
         for (i in 0 until segmentColumnIndices.size step 2) {
             var temp = 0
-            if (i != segmentColumnIndices.size - 2) temp = segmentColumnIndices[i+2] - segmentColumnIndices[i+1]
+            if (i <= segmentColumnIndices.size - 2) temp = segmentColumnIndices[i+2] - segmentColumnIndices[i+1]
             val rect = Rect(segmentColumnIndices[i], 0, segmentColumnIndices[i+1] - segmentColumnIndices[i], mat.height())
             val cropped = Mat(mat, rect)
             tempLetterList.add(cropped)
@@ -418,69 +307,7 @@ object OpticalCharacterDetector {
             }
         }
         words.add(tempLetterList)
-
         return words
-    }
-
-    private fun segmentContour(mat: Mat): ArrayList<Mat> {
-        val result = ArrayList<Mat>()
-        val segmentColumnIndices = ArrayList<Int>()
-        val threshold = (mat.width() * 0.10).toInt()
-        var nonSegmentCounter = 0
-        var segmentPositionStart = -1
-        var segmentPositionEnd = -1
-        val segmentList = BooleanArray(mat.width()) { false }
-        val sumRange = FloatArray(mat.width()) { 0.0f }
-        for(i in 0 until mat.width()) {
-            for(j in 0 until mat.height()) {
-                sumRange[i] += mat[j, i][0].toFloat()
-            }
-        }
-
-        val minVal = sumRange.min()!!
-
-        for (k in 0 until sumRange.size) {
-            if (sumRange[k] <= minVal*2) {
-                segmentList[k] = true
-            }
-        }
-
-        for (k in 0 until segmentList.size) {
-            if (!segmentList[k]) {
-                nonSegmentCounter++
-                if (segmentPositionStart == -1) {
-                    segmentPositionStart = k
-                }
-                if (segmentPositionEnd == -1) {
-                    segmentPositionEnd = k
-                } else {
-                     if (nonSegmentCounter > threshold) {
-                         val segment = (segmentPositionStart + ((segmentPositionEnd - segmentPositionStart) / 2))
-                         println("Segment $segment nonSegmentCounter $nonSegmentCounter k $k")
-                         segmentColumnIndices.add(segment)
-                         nonSegmentCounter = 0
-                         segmentPositionStart = -1
-                         segmentPositionEnd = -1
-                     }
-                }
-            } else {
-                if (segmentPositionStart == -1) {
-                    segmentPositionStart = k
-                } else if (nonSegmentCounter > threshold) {
-                    nonSegmentCounter = 0
-                    segmentPositionEnd = -1
-                }
-            }
-        }
-
-        for (column in segmentColumnIndices) {
-            for(j in 0 until mat.height()) {
-                mat[j, column][0] = 255.0
-            }
-        }
-//        print(mat.dump())
-
-        return result
     }
 
     private fun imagePadding(source: Mat, blockSize: Int): Mat {
@@ -520,11 +347,9 @@ object OpticalCharacterDetector {
     }
 
     private fun findCharacter(mat: Mat): Result {
-        val transposedMat = Mat()
-//        Core.transpose(mat, transposedMat)
         var result = -1
         val data = reshapeData(mat)
-        var output = Array(1) { FloatArray(48) }
+        val output = Array(1) { FloatArray(48) }
         tflite?.run(data, output)
         var max = 0.0f
         for (i in 0..47) {
@@ -572,50 +397,6 @@ object OpticalCharacterDetector {
     private fun getLabelPath(): String {
         return "mapping.txt"
     }
-
-    private fun formWords(contours: ArrayList<MatOfPoint>): ArrayList<Rect> {
-        val words = ArrayList<Rect>()
-        val sortedContours = sortLeftToRight(contours)
-
-        var index = 0
-        while(true) {
-            val c = sortedContours[index]
-            val r = Imgproc.boundingRect(c)
-            var top = r.tl().y
-            var bottom = r.br().y
-            val left = r.tl().x
-            var right = r.br().x
-            while (true) {
-                if(index >= sortedContours.size - 2){
-                    break
-                }
-                val cnt = sortedContours[index]
-                val rect1 = Imgproc.boundingRect(cnt)
-                val cnt1 = sortedContours[index+1]
-                val rect2 = Imgproc.boundingRect(cnt1)
-                if (rect2.tl().x <= rect1.br().x + rect1.height) {
-                    if (rect2.tl().y < top){
-                        top = rect2.tl().y
-                    }
-                    if (rect2.br().y > bottom) {
-                        bottom = rect2.br().y
-                    }
-                    right = rect2.br().x
-                    index++
-                } else {
-                    index++
-                    break
-                }
-            }
-            words.add(Rect(left.toInt(), top.toInt() , (right - left).toInt(), (bottom - top).toInt()))
-            if(index >= sortedContours.size - 2){
-                break
-            }
-        }
-
-        return words
-    }
-
 
     private fun formSentences(contours: ArrayList<MatOfPoint>): ArrayList<ArrayList<MatOfPoint>> {
         val sentences = ArrayList<ArrayList<MatOfPoint>>()

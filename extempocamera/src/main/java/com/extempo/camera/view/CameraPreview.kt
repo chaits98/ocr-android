@@ -56,7 +56,6 @@ class CameraPreview(context: Context, private val mCamera: Camera) : SurfaceView
 
                 val result = convertFrameDataToBitmap()
                 if (result != null) {
-//                    val scaledBitmap = BitmapUtils.scaleBitmap(result, this.width)
                     val rectbounds = RectangleDetector.findRectangle(result)
                     if (rectbounds.isNotEmpty()) {
                         val pointFs = listOf(
@@ -78,14 +77,12 @@ class CameraPreview(context: Context, private val mCamera: Camera) : SurfaceView
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
-        // empty. Take care of releasing the Camera preview in your activity.
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, w: Int, h: Int) {
         try {
             mCamera.stopPreview()
         } catch (e: Exception) {
-            // ignore: tried to stop a non-existent preview
         }
 
         val parameters = mCamera.parameters

@@ -45,6 +45,7 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
                         println("suggestions: " + resultSuggestions[i].getSuggestionsInfoAt(j).getSuggestionAt(k))
                         println("suggestions: " + ".")
                     }
+                    println("suggestions: " + resultSuggestions[i].suggestionsCount)
                     println("suggestions: " + "-")
                 }
                 println("suggestions: " + "*")
@@ -101,7 +102,6 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
             val documentItem = intent.getSerializableExtra(HomeActivity.TEXT_EDITOR_DOCUMENT_ITEM) as DocumentItem
             viewModel?.documentItem = documentItem
             binding?.documentItem = viewModel?.documentItem
-//            val dir = File(this.filesDir.path, "text")
             if (this.filesDir.exists()) {
                 try {
                     val file = File(this.filesDir, documentItem.filename + ".txt")

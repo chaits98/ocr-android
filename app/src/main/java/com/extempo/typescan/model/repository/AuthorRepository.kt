@@ -1,10 +1,8 @@
 package com.extempo.typescan.model.repository
 
-import android.app.Activity
 import android.content.Context
 import com.extempo.typescan.model.Author
 import com.extempo.typescan.model.database.AuthorDatabaseRepository
-import java.math.MathContext
 
 class AuthorRepository(private val context: Context) {
 

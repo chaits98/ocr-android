@@ -5,7 +5,6 @@ import android.text.format.DateFormat
 import androidx.databinding.*
 import androidx.room.*
 import java.io.*
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -38,8 +37,6 @@ data class DocumentItem(
         try {
             val file = File(context.filesDir, this.filename + ".txt")
             println("log_tag: ${file.path}")
-//            val fileOutputStream = FileOutputStream(file)
-//            val outputStreamWriter = OutputStreamWriter(fileOutputStream)
             val outputStreamWriter = FileWriter(file)
             repeat(data.size) {
                 outputStreamWriter.append(data[it])
@@ -47,7 +44,6 @@ data class DocumentItem(
             }
             outputStreamWriter.flush()
             outputStreamWriter.close()
-//            fileOutputStream.close()
         } catch (ex: Exception) {
             ex.printStackTrace()
         }

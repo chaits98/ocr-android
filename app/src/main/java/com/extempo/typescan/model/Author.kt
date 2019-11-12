@@ -1,12 +1,9 @@
 package com.extempo.typescan.model
 
-import android.app.Activity
-import androidx.databinding.Bindable
 import androidx.room.*
 import com.extempo.opticalcharacterrecognizer.model.CharacterMap
 import com.extempo.opticalcharacterrecognizer.utilities.ImageDifference
 import com.extempo.typescan.utilities.CharacterMapFactory
-import com.extempo.typescan.utilities.Converters
 import org.opencv.core.Mat
 
 @Entity(tableName = "Authors")

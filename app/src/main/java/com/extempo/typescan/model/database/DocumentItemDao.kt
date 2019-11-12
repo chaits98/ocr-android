@@ -9,9 +9,6 @@ interface DocumentItemDao {
     @Query("SELECT * FROM documents")
     fun getAllDocumentItems(): DataSource.Factory<Int, DocumentItem>
 
-//    @Query("SELECT * FROM documents WHERE id = :docId")
-//    fun getDocumentItemById(docId: Long): List<DocumentItem>
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDocument(documentItem: DocumentItem)
 

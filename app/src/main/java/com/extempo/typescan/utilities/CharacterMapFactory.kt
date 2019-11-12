@@ -1,14 +1,11 @@
 package com.extempo.typescan.utilities
 
-import android.app.Activity
 import org.opencv.core.Mat
-import java.io.BufferedReader
 import java.io.IOException
-import java.io.InputStreamReader
 
-object CharacterMapFactory {
+public object CharacterMapFactory {
     @Throws(IOException::class)
-    public fun initCharMap(): HashMap<String, ArrayList<Mat>> {
+    fun initCharMap(): HashMap<String, ArrayList<Mat>> {
         val labels = hashMapOf(
             "0" to ArrayList<Mat>(),
             "1" to ArrayList<Mat>(),

@@ -2,7 +2,6 @@ package com.extempo.typescan.model.database
 
 import androidx.room.*
 import com.extempo.typescan.model.Author
-import com.extempo.typescan.model.DocumentItem
 
 @Dao
 interface AuthorDao {
