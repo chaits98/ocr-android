@@ -14,10 +14,9 @@ object AuthorDatabaseRepository {
     }
 
     @WorkerThread
-    fun insertAuthor(author: Author, activity: Activity) {
+    fun insertAuthor(author: Author, context: Context) {
         ThreadManagement.databaseExecutor.execute {
-            author.initCharMap(activity)
-            AuthorDatabase.getInstance(activity).authorDao().insertAuthor(author)
+            AuthorDatabase.getInstance(context).authorDao().insertAuthor(author)
         }
     }
 
@@ -25,6 +24,13 @@ object AuthorDatabaseRepository {
     fun deleteAuthor(author: Author, context: Context) {
         ThreadManagement.databaseExecutor.execute {
             AuthorDatabase.getInstance(context).authorDao().deleteAuthor(author)
+        }
+    }
+
+    @WorkerThread
+    fun updateAuthor(author: Author, context: Context) {
+        ThreadManagement.databaseExecutor.execute {
+            AuthorDatabase.getInstance(context).authorDao().updateAuthor(author)
         }
     }
 

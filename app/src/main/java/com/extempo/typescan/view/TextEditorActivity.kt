@@ -133,7 +133,6 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
             while(tokens.hasMoreTokens()) {
                 dataList.add(tokens.nextToken())
             }
-            dataList.forEach { println("log_tag dataList writing: $it") }
             viewModel?.textList = dataList
             viewModel?.documentItem?.let {docItem->
                 if (text_editor_author.text.toString().isNotBlank() && text_editor_title.text.toString().isNotBlank()) {

@@ -14,6 +14,8 @@ import java.nio.channels.FileChannel.MapMode.READ_ONLY
 import org.opencv.core.Mat
 import org.opencv.core.Scalar
 import org.opencv.core.Core
+import org.opencv.imgcodecs.Imgcodecs
+import java.io.*
 import java.util.concurrent.ThreadPoolExecutor
 import android.R.attr.path
 import android.content.Context
@@ -26,10 +28,10 @@ import kotlin.collections.ArrayList
 
 
 object OpticalCharacterDetector {
-    private var modelFile = "merged128.tflite"
     private var tflite: Interpreter? = null
     private var labelList: List<String>? = null
-    private const val IM_DIMEN = 128
+    private const val IM_DIMEN = 64
+    private var modelFile = "merged$IM_DIMEN.tflite"
 
     fun loadModel(activity: Activity) {
         try {
@@ -165,19 +167,19 @@ object OpticalCharacterDetector {
 //                    val szc = Size
                     val rectCrop = Imgproc.boundingRect(contours[0])
                     val cropped = Mat(letter, rectCrop)
-//                    val sz = Size(100.0, 100.0)
                     val sz2 = Size(IM_DIMEN.toDouble(), IM_DIMEN.toDouble())
 //                    Imgproc.resize(letter, resizeImage, sz)
                     val width = cropped.width()
                     val height = cropped.height()
 //                    println("log_tag: width: $width, height: $height")
                     resizeImage = if (height > width) {
-                        resizeImage(letter, newHeight = 1000.0, newWidth = null)
+                        resizeImage(cropped, newHeight = 1000.0, newWidth = null)
+
                     } else {
-                        resizeImage(letter, newHeight = null, newWidth = 1000.0)
+                        resizeImage(cropped, newHeight = null, newWidth = 1000.0)
                     }
-                    Imgproc.dilate(letter, letter, Mat(), Point(-1.0, -1.0))
-                    resizeImage = imagePadding(resizeImage, 1280)
+                    Imgproc.dilate(resizeImage, resizeImage, Mat(), Point(-1.0, -1.0))
+                    resizeImage = imagePadding(resizeImage, 2000)
                     Imgproc.resize(resizeImage, resizeImage, sz2)
 //                    val element2 = Imgproc.getStructuringElement(
 //                        Imgproc.MORPH_RECT,
@@ -494,17 +496,10 @@ object OpticalCharacterDetector {
         var topPadding = 0
         var leftPadding = 0
 
-        if (width % blockSize != 0) {
-            rightPadding = (blockSize - width % blockSize) / 2
-            leftPadding = rightPadding
-        }
-
-        if (height % blockSize != 0) {
-            topPadding = (blockSize - height % blockSize) / 2
-            bottomPadding = topPadding
-        }
-
-        println("log_tag padding: $leftPadding, $rightPadding, $topPadding, $bottomPadding")
+        rightPadding = (blockSize - width) / 2
+        leftPadding = blockSize - (rightPadding + width)
+        topPadding = (blockSize - height) / 2
+        bottomPadding = blockSize - (topPadding + height)
 
         Core.copyMakeBorder(
             source,
@@ -544,10 +539,9 @@ object OpticalCharacterDetector {
             }
         }
 
-        result--
         return if (result > -1) {
             println("log_tag: $result")
-            Result(output[0][result], labelList?.get(result)!!)
+            Result(output[0][result], labelList?.get(result-1)!!)
         } else {
             Result(0.0f, "")
         }
@@ -557,7 +551,7 @@ object OpticalCharacterDetector {
         val data = Array(1) { Array(IM_DIMEN) { Array(IM_DIMEN) { FloatArray(1) } } }
         for (i in 0 until IM_DIMEN) {
             for (j in 0 until IM_DIMEN) {
-                data[0][i][j][0] = mat[i, j][0].toFloat()
+                data[0][i][j][0] = if(mat[i, j][0].toFloat() > 0) 255.0f else 0.0f
             }
         }
         return data
@@ -685,5 +679,62 @@ object OpticalCharacterDetector {
         val startOffset = fileDescriptor.startOffset
         val declaredLength = fileDescriptor.declaredLength
         return fileChannel.map(READ_ONLY, startOffset, declaredLength)
+    }
+
+
+    private val mapper = hashMapOf(
+        "0" to arrayListOf("O", "D"),
+        "1" to arrayListOf("L", "I", "J", "7"),
+        "2" to arrayListOf("Z"),
+        "3" to emptyList<String>(),
+        "4" to arrayListOf("Y"),
+        "5" to emptyList<String>(),
+        "6" to emptyList<String>(),
+        "7" to arrayListOf("I", "L", "1"),
+        "8" to emptyList<String>(),
+        "9" to emptyList<String>(),
+        "a" to arrayListOf("0", "D", "O"),
+        "b" to arrayListOf("f"),
+        "d" to emptyList<String>(),
+        "e" to emptyList<String>(),
+        "f" to arrayListOf("b"),
+        "g" to emptyList<String>(),
+        "h" to arrayListOf("n"),
+        "n" to arrayListOf("h", "r"),
+        "q" to emptyList<String>(),
+        "r" to arrayListOf("M", "H"),
+        "t" to arrayListOf("E"),
+        "A" to emptyList<String>(),
+        "B" to emptyList<String>(),
+        "C" to emptyList<String>(),
+        "D" to arrayListOf("0", "O"),
+        "E" to arrayListOf("t"),
+        "F" to emptyList<String>(),
+        "G" to emptyList<String>(),
+        "H" to arrayListOf("M"),
+        "I" to arrayListOf("L", "1", "J", "7"),
+        "J" to arrayListOf("I", "Y"),
+        "K" to emptyList<String>(),
+        "L" to emptyList<String>(),
+        "M" to arrayListOf("H"),
+        "N" to emptyList<String>(),
+        "O" to arrayListOf("D", "0"),
+        "P" to emptyList<String>(),
+        "Q" to emptyList<String>(),
+        "R" to emptyList<String>(),
+        "S" to emptyList<String>(),
+        "T" to emptyList<String>(),
+        "U" to emptyList<String>(),
+        "V" to emptyList<String>(),
+        "W" to emptyList<String>(),
+        "X" to emptyList<String>(),
+        "Y" to arrayListOf("J"),
+        "Z" to arrayListOf("2")
+    )
+
+    fun getInterchangableCharacterList(str: String): ArrayList<String> {
+        var output = ArrayList<String>()
+        output = mapper[str] as ArrayList<String>
+        return output
     }
 }
