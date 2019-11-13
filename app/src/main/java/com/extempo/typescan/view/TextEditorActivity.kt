@@ -110,6 +110,7 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
                             })
                         }
                     }
+
                     override fun onLoadCleared(placeholder: Drawable?) {
 
                     }
