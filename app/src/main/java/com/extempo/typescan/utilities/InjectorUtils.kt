@@ -1,6 +1,7 @@
 package com.extempo.typescan.utilities
 
 import android.content.Context
+import com.extempo.typescan.model.repository.AuthorRepository
 import com.extempo.typescan.model.repository.DocumentRepository
 import com.extempo.typescan.viewmodel.HomeActivityViewModelFactory
 import com.extempo.typescan.viewmodel.TextEditorActivityViewModelFactory
@@ -11,6 +12,6 @@ object InjectorUtils {
         return HomeActivityViewModelFactory(DocumentRepository(context))
     }
     fun provideTextEditorActivityViewModelFactory(context: Context): TextEditorActivityViewModelFactory {
-        return TextEditorActivityViewModelFactory(DocumentRepository(context))
+        return TextEditorActivityViewModelFactory(DocumentRepository(context), AuthorRepository(context))
     }
 }

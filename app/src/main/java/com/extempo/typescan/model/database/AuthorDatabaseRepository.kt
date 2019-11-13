@@ -16,6 +16,7 @@ object AuthorDatabaseRepository {
     @WorkerThread
     fun insertAuthor(author: Author, context: Context) {
         ThreadManagement.databaseExecutor.execute {
+            println("log_tag: repo: " + author)
             AuthorDatabase.getInstance(context).authorDao().insertAuthor(author)
         }
     }

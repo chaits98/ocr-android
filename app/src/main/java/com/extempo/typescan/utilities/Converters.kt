@@ -24,6 +24,7 @@ class Converters {
             output?.set(key, list)
         }
 
+        println("log_tag: output:" + output)
         return output
     }
 
@@ -40,6 +41,7 @@ class Converters {
             }
         }
 
+        println("log_tag: map:" + gson.toJson(map))
         return gson.toJson(map)
     }
 

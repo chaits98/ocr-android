@@ -24,6 +24,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.extempo.typescan.R
 import com.extempo.typescan.databinding.ActivityTextEditorBinding
+import com.extempo.typescan.model.Author
 import com.extempo.typescan.model.DocumentItem
 import com.extempo.typescan.utilities.InjectorUtils
 import com.extempo.typescan.viewmodel.TextEditorActivityViewModel
@@ -122,6 +123,7 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
                 Toast.makeText(this, "Error reading file", Toast.LENGTH_SHORT).show()
             }
         }
+        viewModel?.getAllAuthors()
         initializeListeners()
     }
 
@@ -136,12 +138,14 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
             viewModel?.documentItem?.let {docItem->
                 if (text_editor_author.text.toString().isNotBlank() && text_editor_title.text.toString().isNotBlank()) {
                     viewModel?.textList?.let {textList->
+                        viewModel?.author = Author(text_editor_author.text.toString())
                         docItem.author = text_editor_author.text.toString()
                         docItem.title = text_editor_title.text.toString()
                         docItem.generateFilename()
                         binding?.documentItem = docItem
                         if (isNew!!) {
                             viewModel?.insertDocumentItem(docItem, textList).also {
+                                viewModel?.insertAuthor()
                                 finish()
                             }
                         } else {
@@ -161,7 +165,7 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
 
     private fun initializeSpellChecker() {
         val tsm: TextServicesManager = getSystemService(Context.TEXT_SERVICES_MANAGER_SERVICE) as TextServicesManager
-        this.session = tsm.newSpellCheckerSession(null, Locale.ENGLISH, this, true).also {
+        this.session = tsm.newSpellCheckerSession(null, Locale.ENGLISH, this, false).also {
             initializeUI()
         }
     }
@@ -171,7 +175,7 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
         @BindingAdapter("bind:editableText")
         fun loadDocumentContent(et: EditText, data: String?) {
             data?.let {
-                et.setText(it, TextView.BufferType.EDITABLE)
+                et.setText(it.toLowerCase(Locale.ENGLISH), TextView.BufferType.EDITABLE)
             }
         }
 

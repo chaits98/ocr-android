@@ -18,6 +18,12 @@ class Author(var name: String) {
     @TypeConverters(Converters::class)
     var charactermap: HashMap<String, ArrayList<Mat>> = CharacterMapFactory.initCharMap()
 
+    init {
+        println("log_tag: name: " + this.name)
+        println("log_tag: id: " + this.id)
+        println("log_tag: charmap: " + this.charactermap)
+    }
+
     fun compare(characterMap: CharacterMap): Double {
         var overallMetric = 0.0
         var comp = 0

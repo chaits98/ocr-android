@@ -15,6 +15,8 @@ import org.opencv.core.Scalar
 import org.opencv.core.Core
 import java.io.*
 import android.content.Context
+import android.widget.Toast
+import com.extempo.opticalcharacterrecognizer.model.CharImage
 import org.opencv.imgcodecs.Imgcodecs
 import java.util.*
 import kotlin.Comparator
@@ -24,8 +26,9 @@ import kotlin.collections.ArrayList
 object OpticalCharacterDetector {
     private var tflite: Interpreter? = null
     private var labelList: List<String>? = null
-    private const val IM_DIMEN = 64
+    private const val IM_DIMEN = 128
     private var modelFile = "merged$IM_DIMEN.tflite"
+    private var matArray = ArrayList<CharImage>()
 
     fun loadModel(activity: Activity) {
         try {
@@ -86,7 +89,6 @@ object OpticalCharacterDetector {
 //                Imgproc.erode(cropped, cropped, element)
 //                var segmentedContours = segmentContour(cropped)
                 Imgproc.dilate(resizeImage, resizeImage, Mat(), Point(-1.0, -1.0))
-                print(resizeImage.dump())
                 val  result2 = findCharacter(resizeImage)
                 s += result2.getCharacter()
             }
@@ -106,7 +108,7 @@ object OpticalCharacterDetector {
 //            Bitmap.Config.ARGB_8888
 //        )
 //        Utils.matToBitmap(result, bmp)
-        inferenceListener.finished(dataList)
+//        inferenceListener.finished(dataList)
     }
 
     @Throws(Exception::class)
@@ -131,6 +133,7 @@ object OpticalCharacterDetector {
             101,
             40.0
         )
+//        println(result.dump())
 //        val element = Imgproc.getStructuringElement(
 //            Imgproc.MORPH_RECT,
 //            Size(2.0, 2.0)
@@ -151,30 +154,48 @@ object OpticalCharacterDetector {
                     var resizeImage: Mat
                     var contours = ArrayList<MatOfPoint>()
                     Imgproc.findContours(letter, contours, Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
-                    val rectCrop = Imgproc.boundingRect(contours[0])
-                    val cropped = Mat(letter, rectCrop)
-                    val sz2 = Size(IM_DIMEN.toDouble(), IM_DIMEN.toDouble())
-                    val width = cropped.width()
-                    val height = cropped.height()
-                    resizeImage = if (height > width) {
-                        resizeImage(cropped, newHeight = 1000.0, newWidth = null)
+                    try {
+                        val rectCrop = Imgproc.boundingRect(contours[0])
+                        val cropped = Mat(letter, rectCrop)
+                        val sz2 = Size(IM_DIMEN.toDouble(), IM_DIMEN.toDouble())
+                        val width = cropped.width()
+                        val height = cropped.height()
+                        resizeImage = if (height > width) {
+                            resizeImage(cropped, newHeight = 1000.0, newWidth = null)
 
-                    } else {
-                        resizeImage(cropped, newHeight = null, newWidth = 1000.0)
+                        } else {
+                            resizeImage(cropped, newHeight = null, newWidth = 1000.0)
+                        }
+                        Imgproc.dilate(resizeImage, resizeImage, Mat(), Point(-1.0, -1.0))
+                        resizeImage = imagePadding(resizeImage, 2000)
+                        Imgproc.resize(resizeImage, resizeImage, sz2)
+                        val result2 = findCharacter(resizeImage)
+
+                        s += result2.getCharacter()
+
+                        matArray.add(
+                            CharImage(
+                                result2.getCharacter(),
+                                result2.getConfidence(),
+                                resizeImage
+                            )
+                        )
+
+                        val file = File(
+                            context.filesDir,
+                            result2.getCharacter() + result2.getConfidence() + ".png"
+                        )
+                        Imgcodecs.imwrite(file.toString(), resizeImage)
+                    } catch(e: Exception) {
+                        println(e.stackTrace)
+                        Toast.makeText(context, "Error parsing text. Try again.", Toast.LENGTH_SHORT).show()
                     }
-                    Imgproc.dilate(resizeImage, resizeImage, Mat(), Point(-1.0, -1.0))
-                    resizeImage = imagePadding(resizeImage, 2000)
-                    Imgproc.resize(resizeImage, resizeImage, sz2)
-                    val  result2 = findCharacter(resizeImage)
-                    s += result2.getCharacter().toLowerCase(Locale.getDefault())
-                    val file = File(context.filesDir, result2.getCharacter() + result2.getConfidence() + ".png")
-                    Imgcodecs.imwrite(file.toString(), resizeImage)
                 }
                 s += " "
             }
             dataList.add(s)
         }
-        inferenceListener.finished(dataList)
+        inferenceListener.finished(dataList, matArray)
     }
 
     private fun resizeImage (mat: Mat, newHeight: Double?, newWidth: Double?): Mat {
@@ -225,9 +246,9 @@ object OpticalCharacterDetector {
 
         var initial = true
 
-        if (sumRange[0] != 0.0f) {
-            segmentIndices.add(0)
-        }
+//        if (sumRange[0] != 0.0f) {
+//            segmentIndices.add(0)
+//        }
 
         for (k in 0 until segmentList.size) {
             if (segmentList[k]) {
@@ -253,9 +274,9 @@ object OpticalCharacterDetector {
             }
         }
 
-        if (sumRange[sumRange.size - 1] != 0.0f) {
-            segmentIndices.add(sumRange.size - 1)
-        }
+//        if (sumRange[sumRange.size - 1] != 0.0f) {
+//            segmentIndices.add(sumRange.size - 1)
+//        }
 
 //        segmentIndices.add((segmentPositionStart + (mat.height() - segmentPositionStart) / 2))
 
@@ -636,62 +657,5 @@ object OpticalCharacterDetector {
         val startOffset = fileDescriptor.startOffset
         val declaredLength = fileDescriptor.declaredLength
         return fileChannel.map(READ_ONLY, startOffset, declaredLength)
-    }
-
-
-    private val mapper = hashMapOf(
-        "0" to arrayListOf("O", "D"),
-        "1" to arrayListOf("L", "I", "J", "7"),
-        "2" to arrayListOf("Z"),
-        "3" to emptyList<String>(),
-        "4" to arrayListOf("Y"),
-        "5" to emptyList<String>(),
-        "6" to emptyList<String>(),
-        "7" to arrayListOf("I", "L", "1"),
-        "8" to emptyList<String>(),
-        "9" to emptyList<String>(),
-        "a" to arrayListOf("0", "D", "O"),
-        "b" to arrayListOf("f"),
-        "d" to emptyList<String>(),
-        "e" to emptyList<String>(),
-        "f" to arrayListOf("b"),
-        "g" to emptyList<String>(),
-        "h" to arrayListOf("n"),
-        "n" to arrayListOf("h", "r"),
-        "q" to emptyList<String>(),
-        "r" to arrayListOf("M", "H"),
-        "t" to arrayListOf("E"),
-        "A" to emptyList<String>(),
-        "B" to emptyList<String>(),
-        "C" to emptyList<String>(),
-        "D" to arrayListOf("0", "O"),
-        "E" to arrayListOf("t"),
-        "F" to emptyList<String>(),
-        "G" to emptyList<String>(),
-        "H" to arrayListOf("M"),
-        "I" to arrayListOf("L", "1", "J", "7"),
-        "J" to arrayListOf("I", "Y"),
-        "K" to emptyList<String>(),
-        "L" to emptyList<String>(),
-        "M" to arrayListOf("H"),
-        "N" to emptyList<String>(),
-        "O" to arrayListOf("D", "0"),
-        "P" to emptyList<String>(),
-        "Q" to emptyList<String>(),
-        "R" to emptyList<String>(),
-        "S" to emptyList<String>(),
-        "T" to emptyList<String>(),
-        "U" to emptyList<String>(),
-        "V" to emptyList<String>(),
-        "W" to emptyList<String>(),
-        "X" to emptyList<String>(),
-        "Y" to arrayListOf("J"),
-        "Z" to arrayListOf("2")
-    )
-
-    fun getInterchangableCharacterList(str: String): ArrayList<String> {
-        var output = ArrayList<String>()
-        output = mapper[str] as ArrayList<String>
-        return output
     }
 }
