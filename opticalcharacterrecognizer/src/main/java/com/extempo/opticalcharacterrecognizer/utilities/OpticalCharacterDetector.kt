@@ -2,7 +2,6 @@ package com.extempo.opticalcharacterrecognizer.utilities
 
 import android.app.Activity
 import android.graphics.Bitmap
-import android.util.Log
 import com.extempo.opticalcharacterrecognizer.model.Result
 import com.extempo.opticalcharacterrecognizer.model.listeners.InferenceListener
 import org.opencv.android.Utils
@@ -38,7 +37,6 @@ object OpticalCharacterDetector {
     }
 
     @Throws(Exception::class)
-//    fun findAlphabets(bitmap: Bitmap, inferenceListener: InferenceListener) {
     fun findAlphabets(bitmap: Bitmap, inferenceListener: InferenceListener) {
         var dataList: ArrayList<String> = ArrayList()
 
@@ -61,7 +59,6 @@ object OpticalCharacterDetector {
 
         var contours = ArrayList<MatOfPoint>()
         Imgproc.findContours(result, contours, Mat(), Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE)
-        println("log_tag: " + result.height() + " " + result.width())
         contours = filterContours(contours)
         val sentences  = formSentences(contours)
 
@@ -79,7 +76,6 @@ object OpticalCharacterDetector {
                 val sz = Size(100.0, 100.0)
                 val sz2 = Size(IM_DIMEN.toDouble(), IM_DIMEN.toDouble())
                 Imgproc.resize(cropped, resizeImage, sz)
-                Log.d("log_tag", "${cropped.width()} ${cropped.height()} ${cropped[0, 0].size}")
                 resizeImage = imagePadding(resizeImage, 128)
                 Imgproc.resize(resizeImage, resizeImage, sz2)
 //                Imgproc.Canny(cropped, cropped, 120.0, 200.0)
@@ -89,12 +85,10 @@ object OpticalCharacterDetector {
 //                )
 //                Imgproc.erode(cropped, cropped, element)
 //                var segmentedContours = segmentContour(cropped)
-//                println("log_tag: " + result.dump())
                 Imgproc.dilate(resizeImage, resizeImage, Mat(), Point(-1.0, -1.0))
                 print(resizeImage.dump())
                 val  result2 = findCharacter(resizeImage)
                 s += result2.getCharacter()
-                println("log_tag character found: ${result2.getCharacter()} with confidence: ${result2.getConfidence()*100}%")
             }
             dataList.add(s)
         }
@@ -112,7 +106,6 @@ object OpticalCharacterDetector {
 //            Bitmap.Config.ARGB_8888
 //        )
 //        Utils.matToBitmap(result, bmp)
-        dataList.forEach { println("dataList: $it") }
         inferenceListener.finished(dataList)
     }
 
@@ -147,7 +140,6 @@ object OpticalCharacterDetector {
 //        Imgproc.morphologyEx(result, result, Imgproc.MORPH_CLOSE, kernel)
 ////        Imgproc.dilate(result, result, element)
 //        Imgproc.dilate(result, result, Mat(), Point(-1.0, -1.0))
-//        println(result.dump())
 
         val sentences  = formSentences(result)
 
@@ -159,14 +151,11 @@ object OpticalCharacterDetector {
                     var resizeImage: Mat
                     var contours = ArrayList<MatOfPoint>()
                     Imgproc.findContours(letter, contours, Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
-//                    val szc = Size
                     val rectCrop = Imgproc.boundingRect(contours[0])
                     val cropped = Mat(letter, rectCrop)
                     val sz2 = Size(IM_DIMEN.toDouble(), IM_DIMEN.toDouble())
-//                    Imgproc.resize(letter, resizeImage, sz)
                     val width = cropped.width()
                     val height = cropped.height()
-//                    println("log_tag: width: $width, height: $height")
                     resizeImage = if (height > width) {
                         resizeImage(cropped, newHeight = 1000.0, newWidth = null)
 
@@ -176,28 +165,8 @@ object OpticalCharacterDetector {
                     Imgproc.dilate(resizeImage, resizeImage, Mat(), Point(-1.0, -1.0))
                     resizeImage = imagePadding(resizeImage, 2000)
                     Imgproc.resize(resizeImage, resizeImage, sz2)
-//                    val element2 = Imgproc.getStructuringElement(
-//                        Imgproc.MORPH_RECT,
-//                        Size(2 * 0.5 + 1, 2 * 0.5 + 1),
-//                        Point(1.0, 1.0)
-//                    )
-                    println(resizeImage.dump())
-                    println(" a")
-                    println(" ")
-                    println(" a")
-                    println(" ")
-                    println(" a")
-                    println(" ")
-                    println(" a")
-                    println(" ")
-                    println(" a")
-                    println(" ")
-                    println(" a")
-                    println(" ")
                     val  result2 = findCharacter(resizeImage)
                     s += result2.getCharacter().toLowerCase(Locale.getDefault())
-                    println("log_tag character found: ${result2.getCharacter()} with confidence: ${result2.getConfidence()*100}%")
-
                     val file = File(context.filesDir, result2.getCharacter() + result2.getConfidence() + ".png")
                     Imgcodecs.imwrite(file.toString(), resizeImage)
                 }
@@ -256,6 +225,10 @@ object OpticalCharacterDetector {
 
         var initial = true
 
+        if (sumRange[0] != 0.0f) {
+            segmentIndices.add(0)
+        }
+
         for (k in 0 until segmentList.size) {
             if (segmentList[k]) {
                 if (segmentPositionStart == -1 && !initial) {
@@ -280,10 +253,12 @@ object OpticalCharacterDetector {
             }
         }
 
+        if (sumRange[sumRange.size - 1] != 0.0f) {
+            segmentIndices.add(sumRange.size - 1)
+        }
+
 //        segmentIndices.add((segmentPositionStart + (mat.height() - segmentPositionStart) / 2))
 
-        println("log_tag segmentIndicies size: ${segmentIndices.size}")
-        segmentIndices.forEach { println("log_tag segmentIndices: $it") }
 //        try {
 //            var segmentRectangleStart = segmentIndices[0]
 //            for (x in 1 until segmentIndices.size) {
@@ -296,9 +271,6 @@ object OpticalCharacterDetector {
 //        } catch (e: Exception) {
 //            e.printStackTrace()
 //        }
-
-        println("log_tag: size: ${segmentIndices.size}")
-        segmentIndices.forEach { println("log_tag: segmentIndices: $it") }
 
         try {
 //            var segmentRectangleStart = segmentIndices[0]
@@ -316,25 +288,11 @@ object OpticalCharacterDetector {
 //                } else {
 //                    resizeImage = resizeImage(cropped, newHeight = null, newWidth = 500.0)
 //                }
-//                println(cropped.dump())
-//                    println(" a")
-//                    println(" ")
-//                    println(" a")
-//                    println(" ")
-//                    println(" a")
-//                    println(" ")
-//                    println(" a")
-//                    println(" ")
-//                    println(" a")
-//                    println(" ")
-//                    println(" a")
-//                    println(" ")
                 sentences.add(cropped)
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
-//        return ArrayList()
         return sentences
     }
 
@@ -360,6 +318,11 @@ object OpticalCharacterDetector {
                 segmentList[k] = true
             }
         }
+
+        if (sumRange[0] != 0.0f) {
+            segmentColumnIndices.add(0)
+        }
+
         var initial = true
         for (k in 0 until segmentList.size) {
 //            if (segmentList[k]) {
@@ -392,7 +355,10 @@ object OpticalCharacterDetector {
                 }
             }
         }
-//        segmentColumnIndices.add((segmentPositionStart + (mat.width() - segmentPositionStart) / 2))
+
+        if (sumRange[sumRange.size - 1] != 0.0f) {
+            segmentColumnIndices.add(sumRange.size - 1)
+        }
 
         var wordThreshold = 0.45 * mat.height()
 
@@ -404,7 +370,6 @@ object OpticalCharacterDetector {
 //        }
 
         var tempLetterList = ArrayList<Mat>()
-//        var segmentRectangleStart = segmentColumnIndices[0]
 
         for (i in 0 until segmentColumnIndices.size step 2) {
             var temp = 0
@@ -456,7 +421,6 @@ object OpticalCharacterDetector {
                 } else {
                      if (nonSegmentCounter > threshold) {
                          val segment = (segmentPositionStart + ((segmentPositionEnd - segmentPositionStart) / 2))
-                         println("Segment $segment nonSegmentCounter $nonSegmentCounter k $k")
                          segmentColumnIndices.add(segment)
                          nonSegmentCounter = 0
                          segmentPositionStart = -1
@@ -535,7 +499,6 @@ object OpticalCharacterDetector {
         }
 
         return if (result > -1) {
-            println("log_tag: $result")
             Result(output[0][result], labelList?.get(result-1)!!)
         } else {
             Result(0.0f, "")
@@ -564,7 +527,6 @@ object OpticalCharacterDetector {
         }
         reader.close()
         for (i in 0 until labels.size) {
-            println("log_tag: $i ${labels[i]}")
         }
         return labels
     }

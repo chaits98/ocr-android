@@ -24,6 +24,7 @@ class TextEditorActivityViewModel(private val documentRepository: DocumentReposi
 
     fun runInference(capturedImageBitmap: Bitmap, context: Context, sessionWeakReference: WeakReference<SpellCheckerSession>): LiveData<ArrayList<String>> {
         val liveData = MutableLiveData<ArrayList<String>>()
+        println("log_tag: running inference")
         OpticalCharacterDetector.findAlphabets2(capturedImageBitmap,
             object : InferenceListener {
                 override fun started() {
@@ -44,7 +45,6 @@ class TextEditorActivityViewModel(private val documentRepository: DocumentReposi
     }
 
     fun insertDocumentItem(documentItem: DocumentItem, data: ArrayList<String>) {
-        data.forEach { println("log_tag doc item view model $it") }
         documentRepository.insertDocumentItem(documentItem, data)
     }
 

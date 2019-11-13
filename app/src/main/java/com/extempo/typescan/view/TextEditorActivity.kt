@@ -64,7 +64,6 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_text_editor)
         initializeSpellChecker()
-        initializeUI()
     }
 
     private fun initializeUI() {
@@ -83,14 +82,16 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
                 .into(object : CustomTarget<Bitmap>(){
                     @SuppressLint("RestrictedApi")
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                        val data = viewModel?.runInference(resource, this@TextEditorActivity, WeakReference(this@TextEditorActivity.session!!))
-                        data?.observe(this@TextEditorActivity, Observer { dataList ->
-                            var dataString = ""
-                            dataList.forEach { dataString += "$it\n" }
-                            binding?.documentData = dataString
-                        })
-                        viewModel?.documentItem = DocumentItem("", "")
-                        binding?.documentItem = viewModel?.documentItem
+                        this@TextEditorActivity.session?.let { session ->
+                            val data = viewModel?.runInference(resource, this@TextEditorActivity, WeakReference(this@TextEditorActivity.session!!))
+                            data?.observe(this@TextEditorActivity, Observer { dataList ->
+                                var dataString = ""
+                                dataList.forEach { dataString += "$it\n" }
+                                binding?.documentData = dataString
+                            })
+                            viewModel?.documentItem = DocumentItem("", "")
+                            binding?.documentItem = viewModel?.documentItem
+                        }
                     }
                     override fun onLoadCleared(placeholder: Drawable?) {
 
@@ -101,7 +102,6 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
             val documentItem = intent.getSerializableExtra(HomeActivity.TEXT_EDITOR_DOCUMENT_ITEM) as DocumentItem
             viewModel?.documentItem = documentItem
             binding?.documentItem = viewModel?.documentItem
-//            val dir = File(this.filesDir.path, "text")
             if (this.filesDir.exists()) {
                 try {
                     val file = File(this.filesDir, documentItem.filename + ".txt")
@@ -111,7 +111,6 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
                     val dataList = inputStreamReader.readLines()
 
                     dataList.forEach {data->
-                        println("log_tag" + data)
                         dataString += data
                     }
                     binding?.documentData = dataString
@@ -162,7 +161,9 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
 
     private fun initializeSpellChecker() {
         val tsm: TextServicesManager = getSystemService(Context.TEXT_SERVICES_MANAGER_SERVICE) as TextServicesManager
-        this.session = tsm.newSpellCheckerSession(null, Locale.ENGLISH, this, true)
+        this.session = tsm.newSpellCheckerSession(null, Locale.ENGLISH, this, true).also {
+            initializeUI()
+        }
     }
 
     companion object {
@@ -170,7 +171,6 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
         @BindingAdapter("bind:editableText")
         fun loadDocumentContent(et: EditText, data: String?) {
             data?.let {
-                println("log_tag: documentContent $data")
                 et.setText(it, TextView.BufferType.EDITABLE)
             }
         }
@@ -185,7 +185,7 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
 
         @JvmStatic
         @BindingAdapter("bind:title")
-        fun loadtitle(et: EditText, data: DocumentItem?) {
+        fun loadTitle(et: EditText, data: DocumentItem?) {
             data?.let {
                 et.setText(it.title, TextView.BufferType.EDITABLE)
             }

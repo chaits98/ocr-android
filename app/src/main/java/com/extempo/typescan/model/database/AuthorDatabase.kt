@@ -5,7 +5,7 @@ import androidx.room.*
 import com.extempo.typescan.model.Author
 import com.extempo.typescan.utilities.Converters
 
-@Database(entities = arrayOf(Author::class), version = 1)
+@Database(entities = [Author::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class AuthorDatabase: RoomDatabase() {
 
