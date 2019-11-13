@@ -1,5 +1,6 @@
 package com.extempo.typescan.model.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.extempo.typescan.model.Author
 import com.extempo.typescan.model.DocumentItem
@@ -10,7 +11,7 @@ import com.extempo.typescan.utilities.Converters
 interface AuthorDao {
 
     @Query("SELECT * FROM Authors")
-    fun getAllAuthors(): List<Author>
+    fun getAllAuthors(): LiveData<List<Author>>
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insertAuthor(author: Author)

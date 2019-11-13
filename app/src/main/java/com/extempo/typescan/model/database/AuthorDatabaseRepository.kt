@@ -3,13 +3,14 @@ package com.extempo.typescan.model.database
 import android.app.Activity
 import android.content.Context
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
 import com.extempo.typescan.model.Author
 import com.extempo.typescan.utilities.ThreadManagement
 
 object AuthorDatabaseRepository {
 
     @WorkerThread
-    fun getAllAuthors(context: Context): List<Author> {
+    fun getAllAuthors(context: Context): LiveData<List<Author>> {
         return AuthorDatabase.getInstance(context).authorDao().getAllAuthors()
     }
 

@@ -92,8 +92,8 @@ class TextEditorActivityViewModel(private val documentRepository: DocumentReposi
         documentRepository.updateDocumentItem(documentItem, data)
     }
 
-    fun getAllAuthors() {
-        println("log_tag: authors: " + authorRepository.getAllAuthors())
+    fun getAllAuthors(): LiveData<List<Author>> {
+        return authorRepository.getAllAuthors()
     }
 
     fun insertAuthor() {

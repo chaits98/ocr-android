@@ -14,7 +14,6 @@ import android.view.textservice.TextServicesManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.getSystemService
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -25,6 +24,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.extempo.typescan.R
 import com.extempo.typescan.databinding.ActivityTextEditorBinding
 import com.extempo.typescan.model.Author
+import com.extempo.typescan.model.AuthorResult
 import com.extempo.typescan.model.DocumentItem
 import com.extempo.typescan.utilities.InjectorUtils
 import com.extempo.typescan.viewmodel.TextEditorActivityViewModel
@@ -36,6 +36,7 @@ import java.lang.Exception
 import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellCheckerSessionListener {
     override fun onGetSentenceSuggestions(results: Array<out SentenceSuggestionsInfo>?) {
@@ -60,6 +61,7 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
     var viewModel: TextEditorActivityViewModel? = null
     private var isNew: Boolean? = null
     private var session: SpellCheckerSession? = null
+    private var authorMap: HashMap<String, AuthorResult> = HashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +70,6 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
     }
 
     private fun initializeUI() {
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_text_editor)
         val factory = InjectorUtils.provideTextEditorActivityViewModelFactory(this)
         viewModel = ViewModelProviders.of(this, factory).get(TextEditorActivityViewModel::class.java)
@@ -92,6 +93,21 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
                             })
                             viewModel?.documentItem = DocumentItem("", "")
                             binding?.documentItem = viewModel?.documentItem
+                            var max = 0.0
+                            var author = Author("")
+                            viewModel?.charImageArray?.forEach { author.charactermap[it.character]?.add(it.mat) }
+                            viewModel?.getAllAuthors()?.observe(this@TextEditorActivity, Observer {
+                                it.forEach{ a->
+                                    val temp = a.compare(author.charactermap)
+                                    println("log_tag temp: $temp")
+                                    authorMap[a.name] = AuthorResult(a, temp)
+                                    if (temp > max) {
+                                        max = temp
+                                        author.name = a.name
+                                    }
+                                }
+                                println("log_tag: ${author.name}, val: ${max}")
+                            })
                         }
                     }
                     override fun onLoadCleared(placeholder: Drawable?) {
@@ -123,7 +139,6 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
                 Toast.makeText(this, "Error reading file", Toast.LENGTH_SHORT).show()
             }
         }
-        viewModel?.getAllAuthors()
         initializeListeners()
     }
 
