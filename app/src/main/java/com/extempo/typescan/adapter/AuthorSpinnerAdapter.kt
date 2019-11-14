@@ -32,7 +32,8 @@ class AuthorSpinnerAdapter(val context: Context, private var listItems: ArrayLis
         }
 
         vh.authorName.text = listItems[position].author.name
-        vh.matchPercent.text = String.format("%.02f", listItems[position].percentageMatch)
+        if(!listItems[position].percentageMatch.isNaN()) vh.matchPercent.text = String.format("%.02f", listItems[position].percentageMatch)
+        else vh.matchPercent.text = "Not enough data"
         return view
     }
 
