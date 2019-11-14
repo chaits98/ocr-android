@@ -1,6 +1,7 @@
 package com.extempo.typescan.viewmodel
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Context.TEXT_SERVICES_MANAGER_SERVICE
 import android.graphics.Bitmap
@@ -25,19 +26,33 @@ import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import android.app.ProgressDialog
+import androidx.annotation.WorkerThread
+
 
 class TextEditorActivityViewModel(private val documentRepository: DocumentRepository, private val authorRepository: AuthorRepository) : ViewModel() {
     var textList: ArrayList<String>? = null
     var documentItem: DocumentItem? = null
     var author: Author? = null
     var charImageArray: ArrayList<CharImage>? = null
+    var progressDialog: ProgressDialog? = null
 
-    fun runInference(capturedImageBitmap: Bitmap, context: Context, sessionWeakReference: WeakReference<SpellCheckerSession>): LiveData<ArrayList<String>> {
+    init {
+
+    }
+
+    fun runInference(capturedImageBitmap: Bitmap, activity: Activity, sessionWeakReference: WeakReference<SpellCheckerSession>): LiveData<ArrayList<String>> {
         val liveData = MutableLiveData<ArrayList<String>>()
         OpticalCharacterDetector.findAlphabets2(capturedImageBitmap,
             object : InferenceListener {
                 override fun started() {
-                    // show Activity Indicator
+                    println("inference called: started")
+                    activity.runOnUiThread {
+                        progressDialog = ProgressDialog(activity)
+                        progressDialog?.setMessage("Please wait...")
+                        progressDialog?.setCancelable(false)
+                        progressDialog?.show()
+                    }
                 }
 
                 @SuppressLint("RestrictedApi")
@@ -75,11 +90,16 @@ class TextEditorActivityViewModel(private val documentRepository: DocumentReposi
 //                            }
 //                        }
 //                    }
-                    textList = dataList
-                    liveData.value = dataList
-                    charImageArray = matArray
+
+                    activity.runOnUiThread {
+                        progressDialog?.dismiss()
+                        textList = dataList
+                        liveData.value = dataList
+                        charImageArray = matArray
+                        println("inference called: end")
+                    }
                 }
-            }, context)
+            }, activity)
 
         return liveData
     }

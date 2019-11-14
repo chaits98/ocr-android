@@ -16,6 +16,7 @@ import org.opencv.core.Core
 import java.io.*
 import android.content.Context
 import android.widget.Toast
+import androidx.annotation.WorkerThread
 import com.extempo.opticalcharacterrecognizer.model.CharImage
 import org.opencv.imgcodecs.Imgcodecs
 import java.util.*
@@ -112,27 +113,27 @@ object OpticalCharacterDetector {
     }
 
     @Throws(Exception::class)
+    @WorkerThread
     fun findAlphabets2 (bitmap: Bitmap, inferenceListener: InferenceListener, context: Context) {
-        var dataList: ArrayList<String> = ArrayList()
-
-        inferenceListener.started()
-
-        var tempMat = Mat()
-        var source = Mat()
-        Utils.bitmapToMat(bitmap, tempMat)
-        Imgproc.cvtColor(tempMat, source, Imgproc.COLOR_BGR2GRAY)
-        var result = Mat()
+        ThreadManagement.inferenceExecutor.execute {
+            inferenceListener.started()
+            val dataList: ArrayList<String> = ArrayList()
+            var tempMat = Mat()
+            var source = Mat()
+            Utils.bitmapToMat(bitmap, tempMat)
+            Imgproc.cvtColor(tempMat, source, Imgproc.COLOR_BGR2GRAY)
+            var result = Mat()
 
 //        Imgproc.threshold(source, result, 150.0, 255.0, Imgproc.THRESH_BINARY_INV)
-        Imgproc.adaptiveThreshold(
-            source,
-            result,
-            255.0,
-            Imgproc.ADAPTIVE_THRESH_MEAN_C,
-            Imgproc.THRESH_BINARY_INV,
-            101,
-            40.0
-        )
+            Imgproc.adaptiveThreshold(
+                source,
+                result,
+                255.0,
+                Imgproc.ADAPTIVE_THRESH_MEAN_C,
+                Imgproc.THRESH_BINARY_INV,
+                101,
+                40.0
+            )
 //        println(result.dump())
 //        val element = Imgproc.getStructuringElement(
 //            Imgproc.MORPH_RECT,
@@ -144,58 +145,69 @@ object OpticalCharacterDetector {
 ////        Imgproc.dilate(result, result, element)
 //        Imgproc.dilate(result, result, Mat(), Point(-1.0, -1.0))
 
-        val sentences  = formSentences(result)
+            val sentences = formSentences(result)
 
-        for (sentence in sentences) {
-            var s = ""
-            val words = formLetters(sentence)
-            for (word in words) {
-                for (letter in word) {
-                    var resizeImage: Mat
-                    var contours = ArrayList<MatOfPoint>()
-                    Imgproc.findContours(letter, contours, Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
-                    try {
-                        val rectCrop = Imgproc.boundingRect(contours[0])
-                        val cropped = Mat(letter, rectCrop)
-                        val sz2 = Size(IM_DIMEN.toDouble(), IM_DIMEN.toDouble())
-                        val width = cropped.width()
-                        val height = cropped.height()
-                        resizeImage = if (height > width) {
-                            resizeImage(cropped, newHeight = 1000.0, newWidth = null)
+            for (sentence in sentences) {
+                var s = ""
+                val words = formLetters(sentence)
+                for (word in words) {
+                    for (letter in word) {
+                        var resizeImage: Mat
+                        var contours = ArrayList<MatOfPoint>()
+                        Imgproc.findContours(
+                            letter,
+                            contours,
+                            Mat(),
+                            Imgproc.RETR_EXTERNAL,
+                            Imgproc.CHAIN_APPROX_SIMPLE
+                        )
+                        try {
+                            val rectCrop = Imgproc.boundingRect(contours[0])
+                            val cropped = Mat(letter, rectCrop)
+                            val sz2 = Size(IM_DIMEN.toDouble(), IM_DIMEN.toDouble())
+                            val width = cropped.width()
+                            val height = cropped.height()
+                            resizeImage = if (height > width) {
+                                resizeImage(cropped, newHeight = 1000.0, newWidth = null)
 
-                        } else {
-                            resizeImage(cropped, newHeight = null, newWidth = 1000.0)
-                        }
-                        Imgproc.dilate(resizeImage, resizeImage, Mat(), Point(-1.0, -1.0))
-                        resizeImage = imagePadding(resizeImage, 2000)
-                        Imgproc.resize(resizeImage, resizeImage, sz2)
-                        val result2 = findCharacter(resizeImage)
+                            } else {
+                                resizeImage(cropped, newHeight = null, newWidth = 1000.0)
+                            }
+                            Imgproc.dilate(resizeImage, resizeImage, Mat(), Point(-1.0, -1.0))
+                            resizeImage = imagePadding(resizeImage, 2000)
+                            Imgproc.resize(resizeImage, resizeImage, sz2)
+                            val result2 = findCharacter(resizeImage)
 
-                        s += result2.getCharacter()
+                            s += result2.getCharacter()
 
-                        matArray.add(
-                            CharImage(
-                                result2.getCharacter(),
-                                result2.getConfidence(),
-                                resizeImage
+                            matArray.add(
+                                CharImage(
+                                    result2.getCharacter(),
+                                    result2.getConfidence(),
+                                    resizeImage
+                                )
                             )
-                        )
 
-                        val file = File(
-                            context.filesDir,
-                            result2.getCharacter() + result2.getConfidence() + ".png"
-                        )
-                        Imgcodecs.imwrite(file.toString(), resizeImage)
-                    } catch(e: Exception) {
-                        println(e.stackTrace)
-                        Toast.makeText(context, "Error parsing text. Try again.", Toast.LENGTH_SHORT).show()
+                            val file = File(
+                                context.filesDir,
+                                result2.getCharacter() + result2.getConfidence() + ".png"
+                            )
+                            Imgcodecs.imwrite(file.toString(), resizeImage)
+                        } catch (e: Exception) {
+                            println(e.stackTrace)
+                            Toast.makeText(
+                                context,
+                                "Error parsing text. Try again.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
+                    s += " "
                 }
-                s += " "
+                dataList.add(s)
             }
-            dataList.add(s)
+            inferenceListener.finished(dataList, matArray)
         }
-        inferenceListener.finished(dataList, matArray)
     }
 
     private fun resizeImage (mat: Mat, newHeight: Double?, newWidth: Double?): Mat {

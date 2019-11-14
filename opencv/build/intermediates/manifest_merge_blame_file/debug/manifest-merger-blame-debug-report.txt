@@ -6,8 +6,8 @@
 6
 7    <uses-sdk
 8        android:minSdkVersion="17"
-8-->/Users/chaitanyaanand/Desktop/Type Scan/opencv/src/main/AndroidManifest.xml
+8-->D:\Projects\Android\ocr-android\opencv\src\main\AndroidManifest.xml
 9        android:targetSdkVersion="29" />
-9-->/Users/chaitanyaanand/Desktop/Type Scan/opencv/src/main/AndroidManifest.xml
+9-->D:\Projects\Android\ocr-android\opencv\src\main\AndroidManifest.xml
 10
 11</manifest>

@@ -7,13 +7,12 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.view.textservice.SentenceSuggestionsInfo
 import android.view.textservice.SpellCheckerSession
 import android.view.textservice.SuggestionsInfo
 import android.view.textservice.TextServicesManager
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -22,6 +21,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.extempo.typescan.R
+import com.extempo.typescan.adapter.AuthorSpinnerAdapter
 import com.extempo.typescan.databinding.ActivityTextEditorBinding
 import com.extempo.typescan.model.Author
 import com.extempo.typescan.model.AuthorResult
@@ -61,7 +61,7 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
     var viewModel: TextEditorActivityViewModel? = null
     private var isNew: Boolean? = null
     private var session: SpellCheckerSession? = null
-    private var authorMap: HashMap<String, AuthorResult> = HashMap()
+    private var authorList: ArrayList<AuthorResult> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,19 +98,23 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
                             viewModel?.charImageArray?.forEach { author.charactermap[it.character]?.add(it.mat) }
                             viewModel?.getAllAuthors()?.observe(this@TextEditorActivity, Observer {
                                 it.forEach{ a->
+                                    println("log_tag: author: $a")
                                     val temp = a.compare(author.charactermap)
                                     println("log_tag temp: $temp")
-                                    authorMap[a.name] = AuthorResult(a, temp)
+                                    authorList.add(AuthorResult(a, temp))
                                     if (temp > max) {
                                         max = temp
                                         author.name = a.name
                                     }
                                 }
-                                println("log_tag: ${author.name}, val: ${max}")
+                                println("log_tag: ${author.name}, val: $max")
+                                println("log_tag: array size: " + authorList.size)
+                                val spinner: Spinner = findViewById(R.id.text_editor_author_list_spinner)
+                                val spinnerAdapter = AuthorSpinnerAdapter(this@TextEditorActivity, authorList)
+                                spinner.adapter = spinnerAdapter
                             })
                         }
                     }
-
                     override fun onLoadCleared(placeholder: Drawable?) {
 
                     }
@@ -171,6 +175,21 @@ class TextEditorActivity : AppCompatActivity(), SpellCheckerSession.SpellChecker
                         }
                     }
                 }
+            }
+        }
+
+        text_editor_author_list_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                println("log_tag: viewmodel: " + viewModel)
+                println("log_tag: docitem: " + viewModel?.documentItem)
+                viewModel?.documentItem?.let { documentItem ->
+                    println("Selected: " + authorList[position].author.name)
+                    documentItem.author = authorList[position].author.name
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                return
             }
         }
 
