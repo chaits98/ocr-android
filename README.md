@@ -91,6 +91,7 @@ At application level, the data flow is as follows:
 5. Now using the probability map, we infer the word character by character.
 6. The text obtained from inference module is written to a text file and saved in the designated application directory in the internal storage of the mobile phone.
 
+<img src="https://drive.google.com/open?id=1Dh1XpFYTGBn-zf_svMd4lH9bps5YMQW2"/>
 ![Data Flow Diagram](https://drive.google.com/open?id=1Dh1XpFYTGBn-zf_svMd4lH9bps5YMQW2)
 <p align=center>Data Flow Diagram</p>
 
