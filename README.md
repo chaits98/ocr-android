@@ -91,29 +91,29 @@ At application level, the data flow is as follows:
 5. Now using the probability map, we infer the word character by character.
 6. The text obtained from inference module is written to a text file and saved in the designated application directory in the internal storage of the mobile phone.
 
-![Data Flow Diagram](https://imgur.com/AB6xy7Z)
+![Data Flow Diagram](https://drive.google.com/open?id=1Dh1XpFYTGBn-zf_svMd4lH9bps5YMQW2)
 <p align=center>Data Flow Diagram</p>
 
 ## Image pre-processing
 
-![Image pre-processing flow](https://imgur.com/QWigsKL)
+![Image pre-processing flow](https://drive.google.com/open?id=1R1Pm-bOb09_2eCoEYMUOHtkL3KbW8ewY)
 <p align=center>Image pre-processing flow</p>
 
 ## Screenshots
 
-![Camera Module](https://imgur.com/aRH6ihJ)
+![Camera Module](https://drive.google.com/open?id=1EqRa5_EjS7c9dc28cUkp6H5d7ET0wLiA)
 <p align=center>Camera Module</p>
 
-![Edge Detection in Camera Module](https://imgur.com/DylyjKg)
+![Edge Detection in Camera Module](https://drive.google.com/open?id=1qpX-7X_rGMwIFmB94mGMfQVBwiVpFYJI)
 <p align=center>Edge Detection in Camera Module</p>
 
-![Retake, rotate, delete and proceed functions for captured image](https://imgur.com/zo0cA8J)
+![Retake, rotate, delete and proceed functions for captured image](https://drive.google.com/open?id=11Xr7WLy9hdikz9f9v94kVnFmrLPJaonc)
 <p align=center>Retake, rotate, delete and proceed functions for captured image</p>
 
 ![Conversion into Editable Text]()
 <p align=center>Conversion into Editable Text</p>
 
-![List view displaying all document items fetched from local database](https://imgur.com/wdN1bdP)
+![List view displaying all document items fetched from local database](https://drive.google.com/open?id=122Jj8Tmf1_3Xgkji5dj0V1xWmqqVEyrM)
 <p align=center>List view displaying all document items fetched from local database</p>
 
 ## Limitations
