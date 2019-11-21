@@ -110,7 +110,7 @@ At application level, the data flow is as follows:
 <p align=left>Retake, rotate, delete and proceed functions for captured image</p>
 
 
-![Conversion into Editable Text]()
+![Conversion into Editable Text](https://drive.google.com/uc?export=view&id=1I_J6v-dLb3-9cwhYplwYvnlgVJmHJ9B2)
 <p align=left>Conversion into Editable Text</p>
 
 
