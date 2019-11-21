@@ -28,58 +28,58 @@ Please refer to [this repository](https://github.com/aayushsharma9/ocr-cnn) for 
 
 ## Project Structure
 
-|→ Android Application
-    |→ Main Module
-        |→ Home Screen
-            |→ List of scanned and converted documents
-                |→ List Item
-                    |→ Preview Image
-                    |→ Title
-                    |→ Timestamp
-                    |→ Author
-                    |→ Share/delete actions
-                |→ Search Bar
-                    |→ Update list by matching query substring
-                |→ Scan Document Button
-                    |→ Opens camera API
+    |→ Android Application
+        |→ Main Module
+            |→ Home Screen
+                |→ List of scanned and converted documents
+                    |→ List Item
+                        |→ Preview Image
+                        |→ Title
+                        |→ Timestamp
+                        |→ Author
+                        |→ Share/delete actions
+                    |→ Search Bar
+                        |→ Update list by matching query substring
+                    |→ Scan Document Button
+                        |→ Opens camera API
 
-    |→ Camera API
-        |→ Detect Pages (Largest Rectangle in Image)
-        |→ Auto focus on tap
-        |→ Pre-processing of images
-            |→ Resize image
-            |→ Convert to grayscale
-            |→ Convert to black and white
-            |→ Invert color
-            |→ Normalize color value
-        |→ Conversion Algorithm on captured image
-            |→ Sliding contour to detect single characters
-            |→ Store the char images in HashMap corresponding to ASCII key
-            |→ Get the ASCII character from image using TF Lite model
-            |→ Store the character sequence of document into array
+        |→ Camera API
+            |→ Detect Pages (Largest Rectangle in Image)
+            |→ Auto focus on tap
+            |→ Pre-processing of images
+                |→ Resize image
+                |→ Convert to grayscale
+                |→ Convert to black and white
+                |→ Invert color
+                |→ Normalize color value
+            |→ Conversion Algorithm on captured image
+                |→ Sliding contour to detect single characters
+                |→ Store the char images in HashMap corresponding to ASCII key
+                |→ Get the ASCII character from image using TF Lite model
+                |→ Store the character sequence of document into array
 
-    |→ Document Viewer
-        |→ Text editor
-        |→ Initialize document viewport with character array scanned by camera
-            |→ Enter author name (suggested for recurring authors)
+        |→ Document Viewer
+            |→ Text editor
+            |→ Initialize document viewport with character array scanned by camera
+                |→ Enter author name (suggested for recurring authors)
 
-    |→ Optical Character Recognizer Module
-        |→ Assets folder contains the tflite model
-        |→ Models
-            |→ CharacterMap for each author
-            |→ CharImage containing Hashmap of identical charactes for each character as a list
-        |→ Utilities
-            |→ Image Difference
-                |→ Acquire HashMap<Char, Array<Image>>
-                |→ Apply image matching on each char image for each author
-                    |→ Average percentage match
-                        |→ Create new user map if it is less than threshold
-                        |→ Show matching percentage if it is more than threshold
-            |→ Optical Character Detector
-                |→ Performs image processing on the received bitmap
-                |→ Performs segmentation into sentences, words and characters
-                |→ Add padding and resize each character
-                |→ Run inference on each Mat of character and store Mat and recognized character
+        |→ Optical Character Recognizer Module
+            |→ Assets folder contains the tflite model
+            |→ Models
+                |→ CharacterMap for each author
+                |→ CharImage containing Hashmap of identical charactes for each character as a list
+            |→ Utilities
+                |→ Image Difference
+                    |→ Acquire HashMap<Char, Array<Image>>
+                    |→ Apply image matching on each char image for each author
+                        |→ Average percentage match
+                            |→ Create new user map if it is less than threshold
+                            |→ Show matching percentage if it is more than threshold
+                |→ Optical Character Detector
+                    |→ Performs image processing on the received bitmap
+                    |→ Performs segmentation into sentences, words and characters
+                    |→ Add padding and resize each character
+                    |→ Run inference on each Mat of character and store Mat and recognized character
 
 ## Data Flow Diagram
 
