@@ -102,19 +102,19 @@ At application level, the data flow is as follows:
 ## Screenshots
 
 ![Camera Module](https://drive.google.com/uc?export=view&id=1EqRa5_EjS7c9dc28cUkp6H5d7ET0wLiA)
-<p align=center>Camera Module</p>
+<p align=left>Camera Module</p>
 
 ![Edge Detection in Camera Module](https://drive.google.com/uc?export=view&id=1qpX-7X_rGMwIFmB94mGMfQVBwiVpFYJI)
-<p align=center>Edge Detection in Camera Module</p>
+<p align=left>Edge Detection in Camera Module</p>
 
 ![Retake, rotate, delete and proceed functions for captured image](https://drive.google.com/uc?export=view&id=11Xr7WLy9hdikz9f9v94kVnFmrLPJaonc)
-<p align=center>Retake, rotate, delete and proceed functions for captured image</p>
+<p align=left>Retake, rotate, delete and proceed functions for captured image</p>
 
 ![Conversion into Editable Text]()
-<p align=center>Conversion into Editable Text</p>
+<p align=left>Conversion into Editable Text</p>
 
 ![List view displaying all document items fetched from local database](https://drive.google.com/uc?export=view&id=122Jj8Tmf1_3Xgkji5dj0V1xWmqqVEyrM)
-<p align=center>List view displaying all document items fetched from local database</p>
+<p align=left>List view displaying all document items fetched from local database</p>
 
 ## Limitations
 
