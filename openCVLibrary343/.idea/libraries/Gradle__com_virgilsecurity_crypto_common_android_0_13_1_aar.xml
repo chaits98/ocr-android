@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: com.virgilsecurity.crypto:common-android:0.13.1@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e1f4f9ccb202e460f58900eb0c0e49cf/jetified-common-android-0.13.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e1f4f9ccb202e460f58900eb0c0e49cf/jetified-common-android-0.13.1/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.virgilsecurity.crypto/common-android/0.13.1/b07c986f65b1097b011be087e527db516f507347/common-android-0.13.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.virgilsecurity.crypto/common-android/0.13.1/8c59253641a6f86b90134cbc789eb5c2c7ac1f10/common-android-0.13.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

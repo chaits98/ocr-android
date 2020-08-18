@@ -1,1 +1,2 @@
-include ':app', ':extempocamera', ':opencv', ':opticalcharacterrecognizer'
+include ':openCVLibrary343'
+include ':app', ':extempocamera', ':opticalcharacterrecognizer'

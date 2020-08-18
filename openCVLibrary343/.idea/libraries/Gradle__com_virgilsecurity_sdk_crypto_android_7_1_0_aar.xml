@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: com.virgilsecurity.sdk:crypto-android:7.1.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/63a5fd1ba1f1b85c9d73d4635b1272ee/jetified-crypto-android-7.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/63a5fd1ba1f1b85c9d73d4635b1272ee/jetified-crypto-android-7.1.0/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.virgilsecurity.sdk/crypto-android/7.1.0/c7e2da29c791fa89696aa0cd39af28a7384fc302/crypto-android-7.1.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.virgilsecurity.sdk/crypto-android/7.1.0/c7e2da29c791fa89696aa0cd39af28a7384fc302/crypto-android-7.1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

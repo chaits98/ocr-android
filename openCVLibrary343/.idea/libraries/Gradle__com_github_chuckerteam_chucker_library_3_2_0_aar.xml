@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.chuckerteam.chucker:library:3.2.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bd74f90d56b59b5f7f524f89c4cb086a/jetified-library-3.2.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bd74f90d56b59b5f7f524f89c4cb086a/jetified-library-3.2.0/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.chuckerteam.chucker/library/3.2.0/21f000f49ef9a4e47f21aeb385bc3150b1dafa74/library-3.2.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.chuckerteam.chucker/library/3.2.0/3113d9d4df3296539b0dfa37adfde536df48eec9/library-3.2.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

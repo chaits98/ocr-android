@@ -11,7 +11,7 @@ Recognition). Along with this, the application also classifies each document bas
 
 Download the opencv for Android from [here](https://sourceforge.net/projects/opencvlibrary/files/opencv-android/) and copy "opencv-version-android-sdk/sdk/native/libs" to "projectRootFolder/app".
 Open in Android Studio and run application.
-
+This project is currently supporting opencv version 3.4.3, You can download this version from [here](https://udomain.dl.sourceforge.net/project/opencvlibrary/opencv-android/3.4.3/opencv-3.4.3-android-sdk.zip)
 
 ## CNN Model
 

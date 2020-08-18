@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: com.virgilsecurity.crypto:foundation-android:0.13.1@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c85ce408527d9a337670de4269188f3e/jetified-foundation-android-0.13.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c85ce408527d9a337670de4269188f3e/jetified-foundation-android-0.13.1/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.virgilsecurity.crypto/foundation-android/0.13.1/c0cc3fa5874efa6644c063fe4c584d003053e0f4/foundation-android-0.13.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.virgilsecurity.crypto/foundation-android/0.13.1/7d8d498aad3e1595a8dd4309d79fcd49768ccd24/foundation-android-0.13.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

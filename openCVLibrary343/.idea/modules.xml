@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1133766916/Scannify.iml" filepath="$PROJECT_DIR$/.idea/modules/-1133766916/Scannify.iml" group="Scannify" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-362344306/app.iml" filepath="$PROJECT_DIR$/.idea/modules/-362344306/app.iml" group="Scannify/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/openCVLibrary343.iml" filepath="$PROJECT_DIR$/.idea/modules/openCVLibrary343.iml" group="Scannify/openCVLibrary343" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-978665471/opencvutils.iml" filepath="$PROJECT_DIR$/.idea/modules/-978665471/opencvutils.iml" group="Scannify/opencvutils" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1896899323/react-native-camera.iml" filepath="$PROJECT_DIR$/.idea/modules/1896899323/react-native-camera.iml" group="Scannify/react-native-camera" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/293887434/react-native-community_async-storage.iml" filepath="$PROJECT_DIR$/.idea/modules/293887434/react-native-community_async-storage.iml" group="Scannify/react-native-community_async-storage" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-757735594/react-native-community_google-signin.iml" filepath="$PROJECT_DIR$/.idea/modules/-757735594/react-native-community_google-signin.iml" group="Scannify/react-native-community_google-signin" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/84059975/react-native-community_masked-view.iml" filepath="$PROJECT_DIR$/.idea/modules/84059975/react-native-community_masked-view.iml" group="Scannify/react-native-community_masked-view" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-22845333/react-native-community_netinfo.iml" filepath="$PROJECT_DIR$/.idea/modules/-22845333/react-native-community_netinfo.iml" group="Scannify/react-native-community_netinfo" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/2057615549/react-native-community_toolbar-android.iml" filepath="$PROJECT_DIR$/.idea/modules/2057615549/react-native-community_toolbar-android.iml" group="Scannify/react-native-community_toolbar-android" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1278847958/react-native-document-picker.iml" filepath="$PROJECT_DIR$/.idea/modules/-1278847958/react-native-document-picker.iml" group="Scannify/react-native-document-picker" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1003271580/react-native-encrypted-storage.iml" filepath="$PROJECT_DIR$/.idea/modules/1003271580/react-native-encrypted-storage.iml" group="Scannify/react-native-encrypted-storage" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1370559272/react-native-fbsdk.iml" filepath="$PROJECT_DIR$/.idea/modules/1370559272/react-native-fbsdk.iml" group="Scannify/react-native-fbsdk" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/257923384/react-native-firebase_analytics.iml" filepath="$PROJECT_DIR$/.idea/modules/257923384/react-native-firebase_analytics.iml" group="Scannify/react-native-firebase_analytics" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1164104275/react-native-firebase_app.iml" filepath="$PROJECT_DIR$/.idea/modules/1164104275/react-native-firebase_app.iml" group="Scannify/react-native-firebase_app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/980569462/react-native-firebase_auth.iml" filepath="$PROJECT_DIR$/.idea/modules/980569462/react-native-firebase_auth.iml" group="Scannify/react-native-firebase_auth" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-447867063/react-native-firebase_database.iml" filepath="$PROJECT_DIR$/.idea/modules/-447867063/react-native-firebase_database.iml" group="Scannify/react-native-firebase_database" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/861394614/react-native-firebase_messaging.iml" filepath="$PROJECT_DIR$/.idea/modules/861394614/react-native-firebase_messaging.iml" group="Scannify/react-native-firebase_messaging" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/2123951195/react-native-firebase_remote-config.iml" filepath="$PROJECT_DIR$/.idea/modules/2123951195/react-native-firebase_remote-config.iml" group="Scannify/react-native-firebase_remote-config" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-701648989/react-native-fs.iml" filepath="$PROJECT_DIR$/.idea/modules/-701648989/react-native-fs.iml" group="Scannify/react-native-fs" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-183128208/react-native-gesture-handler.iml" filepath="$PROJECT_DIR$/.idea/modules/-183128208/react-native-gesture-handler.iml" group="Scannify/react-native-gesture-handler" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-59923191/react-native-image-filter-kit.iml" filepath="$PROJECT_DIR$/.idea/modules/-59923191/react-native-image-filter-kit.iml" group="Scannify/react-native-image-filter-kit" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-554109857/react-native-localize.iml" filepath="$PROJECT_DIR$/.idea/modules/-554109857/react-native-localize.iml" group="Scannify/react-native-localize" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1637550252/react-native-reanimated.iml" filepath="$PROJECT_DIR$/.idea/modules/1637550252/react-native-reanimated.iml" group="Scannify/react-native-reanimated" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/758819801/react-native-safe-area-context.iml" filepath="$PROJECT_DIR$/.idea/modules/758819801/react-native-safe-area-context.iml" group="Scannify/react-native-safe-area-context" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/199841585/react-native-screens.iml" filepath="$PROJECT_DIR$/.idea/modules/199841585/react-native-screens.iml" group="Scannify/react-native-screens" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-509947890/react-native-svg.iml" filepath="$PROJECT_DIR$/.idea/modules/-509947890/react-native-svg.iml" group="Scannify/react-native-svg" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/125050470/react-native-vector-icons.iml" filepath="$PROJECT_DIR$/.idea/modules/125050470/react-native-vector-icons.iml" group="Scannify/react-native-vector-icons" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1426165843/react-native-virgil-crypto.iml" filepath="$PROJECT_DIR$/.idea/modules/-1426165843/react-native-virgil-crypto.iml" group="Scannify/react-native-virgil-crypto" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1721546124/react-native-wifi-p2p.iml" filepath="$PROJECT_DIR$/.idea/modules/1721546124/react-native-wifi-p2p.iml" group="Scannify/react-native-wifi-p2p" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/951536303/rn-fetch-blob.iml" filepath="$PROJECT_DIR$/.idea/modules/951536303/rn-fetch-blob.iml" group="Scannify/rn-fetch-blob" />
+    </modules>
+  </component>
+</project>

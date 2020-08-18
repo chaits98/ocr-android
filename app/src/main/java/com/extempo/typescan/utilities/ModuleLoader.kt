@@ -9,7 +9,7 @@ object ModuleLoader {
         if (done) {
             return
         }
-        System.loadLibrary("opencv_java4")
+        System.loadLibrary("opencv_java3")
         done = true
     }
 }
